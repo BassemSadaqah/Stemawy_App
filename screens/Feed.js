@@ -1,0 +1,76 @@
+import React,{useState,useContext,useEffect} from 'react'
+import { ScrollView, FlatList, View ,RefreshControl,Text} from 'react-native'
+import Question from '../components/Question'
+import Question_Gql from '../components/Question_Gql'
+import Loading from '../components/Loading'
+import Err from '../components/Err'
+import Header from '../components/Header'
+import {userContext} from '../App'
+
+
+function Feed(props) {
+    const drawer_navigation = props.route.params.drawer_navigation
+    const [questions, setQuestions] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [err, setErr] = useState(false)
+    const [refreshing, setRefreshing] = useState(false);
+    const {user} = useContext(userContext)
+    console.log(user)
+    useEffect(()=>{
+        if(refreshing || loading){
+        // firestore().collection('Questions').orderBy('time','desc').limit(50).get().
+        // then(async data=> {
+        //     questions_data = data.docs.slice()
+        //     questions_data = await Promise.all(questions_data.map(async (q) => {
+        //         const question_id=q._ref._documentPath._parts[1]
+        //         console.log(q)
+        //         var imgUrl=''
+        //             if (q._data.hasImage) {
+        //                 try{
+        //                     imgUrl = await storage().ref(`Questions_Images/${q._data.uid}/${question_id}`).getDownloadURL();
+        //                 }catch{
+        //                 }
+        //             }
+        //         return {...q._data,question_img:imgUrl,question_id:question_id}
+        //         }))
+        //     setQuestions(questions_data)
+        //     setLoading(false)
+        //     setRefreshing(false)
+        //     setErr(false)
+        // }).catch(err=>{
+        //     setRefreshing(false)
+        //     setErr(true)
+        //     setLoading(false)
+        //     console.log(err)
+        // })
+    }},[refreshing])
+
+    if(err) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
+    if(loading || refreshing) return <><Header drawer_navigation={drawer_navigation}/><Loading/></>
+    return (
+        <View>
+            <Header drawer_navigation={drawer_navigation} />
+            <ScrollView>
+                <Question_Gql key={235} id={100}/>
+                <Question_Gql key={255} id={50}/>
+                <Question_Gql key={15} id={17}/>
+                <Question_Gql key={1514} id={19}/>
+                <Question_Gql key={1155} id={157}/>
+                <Question_Gql key={1521} id={247}/>
+                <Question_Gql key={88475} id={55}/>
+                <Question_Gql key={72458} id={21}/>
+                <Question_Gql key={7123} id={211}/>
+                <Question_Gql key={7242} id={350}/>
+                <Question_Gql key={453359} id={82}/>
+            </ScrollView>
+            {/* <FlatList
+                data={questions}
+                renderItem={({item}) => <Question {...item} key={item.index*74}/>}
+                style={{marginBottom:50}}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setRefreshing(true)}}/>}
+            /> */}
+        </View>
+    )
+}
+
+export default Feed
