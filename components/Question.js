@@ -1,11 +1,12 @@
 import React,{useState,useContext} from 'react';
-import { StyleSheet, Text, View,Image, ToastAndroid ,FlatList, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View,Image, Modal,ToastAndroid ,FlatList, TouchableOpacity} from 'react-native';
 // import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import s from './styles/Question'
 import Button from './Button'
 import {userContext} from '../App'
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 function since_when(previous) {
     var current = Date.parse(new Date().toUTCString())-7200000;
@@ -33,7 +34,10 @@ function since_when(previous) {
 }
 export default function Question(props) {
     const {user}=useContext(userContext)
-    // console.log(User)
+    const [clicked, setClicked] = useState(null)
+    const [answered, setAnswered] = useState(false)
+    const [modalVisibility, setModalVisibility] = useState(false)
+    const [aspectRatio, setAspectRatio] = useState(1000)
     
      props = {
         name: user.displayName,
@@ -49,8 +53,6 @@ export default function Question(props) {
         question_id:props.question_id,
         ...props
     }
-    const [clicked, setClicked] = useState(null)
-    const [answered,setAnswered]=useState(false)
     const submitAnswer=()=>{
         // console.log(clicked)
         // // console.log(props.answer)
@@ -108,7 +110,17 @@ export default function Question(props) {
                     </View>
                 </View>
                 <Text style={s.question_text}>{props.question}</Text>
-                {props.img?<Image style={s.question_img} source={{uri:props.img}}/>:null}
+                {props.img?
+                 <View>
+                     <TouchableOpacity onPress={()=>{setModalVisibility(true)}}>
+                        <Image style={s.question_img}  source={{uri:props.img}}/>
+                     </TouchableOpacity>
+                    <Modal  animationType='none' onRequestClose={()=>setModalVisibility(false)} visible={modalVisibility}  transparent={true}>
+                        <ImageViewer renderHeader={()=>(<View></View>)} enableSwipeDown={true}  onSwipeDown={()=>setModalVisibility(false)} renderIndicator={()=>null} imageUrls={[{url:props.img}]} />
+                    </Modal>
+                 </View>
+                 :null}
+                {/* {props.img?<Image style={s.question_img} source={{uri:props.img}}/>:null} */}
                     <FlatList
                         style={{width:'100%'}}
                         data={props.choices}

@@ -13,7 +13,7 @@ const submitForm=(form_data,setUser)=>{
     // setUser({id:1,email:'ee'})
     const {email,password}=form_data
     if(!email || !password) return ToastAndroid.show('Please Enter Valid Data', ToastAndroid.SHORT);
-     axios.post('https://stemawy-app.herokuapp.com/login',form_data)
+     axios.post('https://stemawy-app.herokuapp.com//login',form_data)
     .then(({data})=>{
         if(data.success && data.accessToken &&data.user){
             console.log(data)

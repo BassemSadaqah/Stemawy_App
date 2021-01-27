@@ -26,13 +26,16 @@ const styles = StyleSheet.create({
         fontSize: 17,
         marginTop: 10,
         marginBottom: 15,
-        marginLeft: 10,
+        marginHorizontal: 10,
     },
     question_img: {
         width: '100%',
+        // minHeight:100,
         // height:200,
         marginBottom:10,
-        aspectRatio: 1.5
+        // flex:1,
+        aspectRatio:3/2 ,
+        // aspectRatio: 1
         // resizeMode:'repeat'
     },
     profile_view:{

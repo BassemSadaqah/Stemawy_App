@@ -97,13 +97,15 @@ const styles=StyleSheet.create({
 
 const GET_USER_QUESTIONS = gql `
 query user_questions($id:Int!){
-    userQuestions(user_id:$id){
-        id
-        question
-        img
-        choices
-        answer
-        time
+    user(id:$id){
+        questions{
+            id
+            question
+            img
+            choices
+            answer
+            time
+        }
     }
 }`
 
@@ -113,45 +115,15 @@ function Profile(props) {
     const { loading, error, data,refetch } = useQuery(GET_USER_QUESTIONS,{variables:{id:user.id}});
     const [questions,setQuestions]=useState([])
     const [err, setErr] = useState(false)
-    const [refreshing, setRefreshing] = React.useState(false);
+    const [refreshing, setRefreshing] = useState(false);
     const drawer_navigation = props.route.params.drawer_navigation
     useEffect(() => {
-    //     console.log('aaaaaaaaa')
-    //     if(refreshing || loading){
-    //    firestore().collection('Questions').where('uid','==',user.uid).orderBy('time','desc').limit(10).get().
-    //    then(async data=>{
-    //        questions_data=data.docs.slice()
-    //        console.log('wwwwwwwwwwwwwwwwwwwwwwwwwww')
-    //        console.log(questions_data.length)
-    //        console.log('wwwwwwwwwwwwwwwwwwwwwwwwwwws')
-    //        if(questions_data.length>2){
-    //        questions_data = await Promise.all(questions_data.map(async (q) => {
-    //            const question_id=q._ref._documentPath._parts[1]
-    //            console.log(question_id)
-    //            console.log(user.uid)
-    //            var imgUrl=''
-    //             if (q._data.hasImage) {
-    //                 try{
-    //                     imgUrl = await storage().ref(`Questions_Images/${user.uid}/${question_id}`).getDownloadURL();
-    //                 }catch{e=>{console.log(e)}
-    //                 }
-    //             }
-    //            return {...q._data,question_img:imgUrl}
-    //         }))}
-    //        setQuestions(questions_data)
-    //        setLoading(false)
-    //        setRefreshing(false)
-    //         setErr(false)
-    //    }).catch((err)=>{
-    //        console.log(err)
-    //         setRefreshing(false)
-    //         setErr(true)
-    //         setLoading(false)
-    //    })
-    // }
-},[refreshing])
+    //     
+    },[])
+
     if(err || error) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
     if(loading || refreshing) return <><Header/><Loading/></>
+    console.log(data)
     // setRefreshing(false)
     // console.log(data.userQuestions)
     return (
@@ -185,8 +157,9 @@ function Profile(props) {
                 <Text style={styles.upload_text}>What's your question?</Text>
             </View> */}
             <FlatList
+                onScroll={()=>console.log('q[[')}
                 style={{width:'100%',marginBottom:20}}
-                data={(data.userQuestions)}            
+                data={(data.user.questions)}            
                 renderItem={({item})=><Question {...item} key={uuid()} />}
                 />
         </View>

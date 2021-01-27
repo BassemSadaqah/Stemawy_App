@@ -28,14 +28,14 @@ import { onError } from "@apollo/client/link/error";
 
 const AuthStack = createStackNavigator();
 const FeedDrawer = createDrawerNavigator();
-
-
-
-
-
-
-
 export const userContext = createContext({ name: 'Bassem Sadaqah' })
+
+const defaultClientOptions = {
+  query: {
+    fetchPolicy: 'cache-and-network',
+  }
+}
+
 function App() {
   const [isLoading, setisLoading] = useState(true)
   const [Err, setErr] = useState(false)
@@ -43,11 +43,10 @@ function App() {
 
   
   const httpLink = createHttpLink({
-      uri: 'https://stemawy-app.herokuapp.com/graphql',
+      uri: 'https://stemawy-app.herokuapp.com//graphql',
   });
   const authLink = setContext(async(_, { headers }) => {
     const token = await AsyncStorage.getItem('accessToken');
-    console.log('gfffffffffffffff')
     // return the headers to the context so httpLink can read them
     return {
       headers: {
@@ -73,7 +72,8 @@ function App() {
 
   const client = new ApolloClient({
     link: errLink.concat(authLink.concat(httpLink)),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
+    defaultOptions: defaultClientOptions
   });
 
   const Logout=({route})=>{
@@ -93,7 +93,7 @@ function App() {
         console.log(accessToken)
         if(accessToken){
             try{
-              const {data}=await axios.get('https://stemawy-app.herokuapp.com/user',{headers:{authorization:accessToken}})
+              const {data}=await axios.get('https://stemawy-app.herokuapp.com//user',{headers:{authorization:accessToken}})
               if(data.success){
                 setUser({isSigned:true,...data.user})
               }else{

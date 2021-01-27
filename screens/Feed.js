@@ -6,6 +6,10 @@ import Loading from '../components/Loading'
 import Err from '../components/Err'
 import Header from '../components/Header'
 import {userContext} from '../App'
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid';
+
+
 
 
 function Feed(props) {
@@ -14,9 +18,13 @@ function Feed(props) {
     const [loading, setLoading] = useState(false)
     const [err, setErr] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
+    const [ids, setIds] = useState([10,20,30,40,50,60]);
     const {user} = useContext(userContext)
     console.log(user)
     useEffect(()=>{
+        //   setTimeout(() => {
+        //       setIds([100, 200])
+        //   }, 3000)
         if(refreshing || loading){
         // firestore().collection('Questions').orderBy('time','desc').limit(50).get().
         // then(async data=> {
@@ -45,12 +53,35 @@ function Feed(props) {
         // })
     }},[refreshing])
 
+    const handleScroll=({nativeEvent:e})=>{
+        const ratio=e.contentOffset.y / e.contentSize.height*100
+        console.log(ratio)
+        // if(ratio>85
+    }
+    const loadMore=()=>{
+        setIds((i)=>{
+            console.log('11111111111111111')
+            let z=i;
+            z.push(Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300));
+            return z
+        })
+    }
+
     if(err) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
     if(loading || refreshing) return <><Header drawer_navigation={drawer_navigation}/><Loading/></>
     return (
         <View>
             <Header drawer_navigation={drawer_navigation} />
-            <ScrollView>
+            <FlatList
+            // onScroll={handleScroll}
+            data={ids}
+            // data={[100,200,12,34,53,112,311,165,187, 222,190,98]}
+            initialNumToRender={5}
+            onEndReachedThreshold={0.9}
+            onEndReached={loadMore}
+            renderItem={({item})=><Question_Gql id={item}  key={item.index}/>}
+            />
+            {/* <ScrollView onScroll={handleScroll}>
                 <Question_Gql key={235} id={100}/>
                 <Question_Gql key={255} id={50}/>
                 <Question_Gql key={15} id={17}/>
@@ -62,7 +93,7 @@ function Feed(props) {
                 <Question_Gql key={7123} id={211}/>
                 <Question_Gql key={7242} id={350}/>
                 <Question_Gql key={453359} id={82}/>
-            </ScrollView>
+            </ScrollView> */}
             {/* <FlatList
                 data={questions}
                 renderItem={({item}) => <Question {...item} key={item.index*74}/>}

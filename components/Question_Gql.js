@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { StyleSheet, Text, View,Image, ToastAndroid ,FlatList, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View,Image, Modal,ToastAndroid ,FlatList, TouchableOpacity,Dimensions,PureComponent} from 'react-native';
 // import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import s from './styles/Question'
 import Button from './Button'
@@ -9,50 +9,60 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { gql, useQuery } from '@apollo/client'
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
-const GET_QUESTION = gql `
-query question($id:Int!){
-    question(id:$id){
-        id
-        question
-        img
-        choices
-        answer
-        time
-        user{
+
+
+export default React.memo(function Question(props) {
+    console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqstion '+props.id)
+    const GET_QUESTION = gql `
+    query question($id:Int!){
+        question(id:$id){
             id
-            first_name
-            last_name
+            question
+            img
+            choices
+            answer
+            time
+            user{
+                id
+                first_name
+                last_name
+            }
+        }
+    }`
+    function since_when(previous) {
+        var current = Date.parse(new Date().toUTCString()) - 7200000;
+        var msPerMinute = 60 * 1000;
+        var msPerHour = msPerMinute * 60;
+        var msPerDay = msPerHour * 24;
+        var msPerMonth = msPerDay * 30;
+        var msPerYear = msPerDay * 365;
+    
+        var elapsed = current - previous;
+    
+        if (elapsed < msPerMinute) {
+            return Math.round(elapsed / 1000) + ' seconds ago';
+        } else if (elapsed < msPerHour) {
+            return Math.round(elapsed / msPerMinute) + ' minutes ago';
+        } else if (elapsed < msPerDay) {
+            return Math.round(elapsed / msPerHour) + ' hours ago';
+        } else if (elapsed < msPerMonth) {
+            return Math.round(elapsed / msPerDay) + ' days ago';
+        } else if (elapsed < msPerYear) {
+            return Math.round(elapsed / msPerMonth) + ' months ago';
+        } else {
+            return Math.round(elapsed / msPerYear) + ' years ago';
         }
     }
-}`
-function since_when(previous) {
-    var current = Date.parse(new Date().toUTCString()) - 7200000;
-    var msPerMinute = 60 * 1000;
-    var msPerHour = msPerMinute * 60;
-    var msPerDay = msPerHour * 24;
-    var msPerMonth = msPerDay * 30;
-    var msPerYear = msPerDay * 365;
-
-    var elapsed = current - previous;
-
-    if (elapsed < msPerMinute) {
-        return Math.round(elapsed / 1000) + ' seconds ago';
-    } else if (elapsed < msPerHour) {
-        return Math.round(elapsed / msPerMinute) + ' minutes ago';
-    } else if (elapsed < msPerDay) {
-        return Math.round(elapsed / msPerHour) + ' hours ago';
-    } else if (elapsed < msPerMonth) {
-        return Math.round(elapsed / msPerDay) + ' days ago';
-    } else if (elapsed < msPerYear) {
-        return Math.round(elapsed / msPerMonth) + ' months ago';
-    } else {
-        return Math.round(elapsed / msPerYear) + ' years ago';
-    }
-}
-export default function Question(props) {
+    
     const { loading, error, data } = useQuery(GET_QUESTION,{variables:{id:props.id}});
     const {user,setUser}=useContext(userContext)
+    const [clicked, setClicked] = useState(null)
+    const [answered, setAnswered] = useState(false)
+    const [modalVisibility, setModalVisibility] = useState(false)
+    const [aspectRatio, setAspectRatio] = useState(1000)
+   
     // console.log(User)
      props = {
         name: user.displayName,
@@ -68,8 +78,8 @@ export default function Question(props) {
         question_id:props.question_id
         ,
     }
-    const [clicked, setClicked] = useState(null)
-    const [answered,setAnswered]=useState(false)
+   
+
     if (error) {
         console.log(error.message)
         return <></>
@@ -122,18 +132,35 @@ export default function Question(props) {
     }
     if(loading) return <></>
     // if(loading) return <Loading/>
-    gql_question=data.question
+    let gql_question=data.question
+     if (gql_question.img) {
+        Image.getSize(gql_question.img, (srcWidth, srcHeight) => {
+            setAspectRatio(srcWidth/srcHeight)
+        },(err)=>{
+            // setAspectRatio(1)
+        })
+     }
     return (
         <View style={s.Question}>
                 <View style={s.profile_view}>
-                    <Image style={s.profile_img} source={{uri:props.user_img}}/>
+                    <Image style={s.profile_img}  source={{uri:props.user_img}}/>
                     <View>
                         <Text style={s.username}>{gql_question.user.first_name} {gql_question.user.last_name}</Text>
                         <Text style={s.since}>{since_when(gql_question.time)}</Text>
                     </View>
                 </View>
                 <Text style={s.question_text}>{gql_question.question}</Text>
-                {gql_question.img?<Image style={s.question_img} source={{uri:gql_question.img}}/>:null}
+                 {gql_question.img?
+                 <View>
+                     <TouchableOpacity onPress={()=>{setModalVisibility(true)}}>
+                        <Image style={{...s.question_img,aspectRatio}}  source={{uri:gql_question.img}}/>
+                     </TouchableOpacity>
+                    <Modal  animationType='none' onRequestClose={()=>setModalVisibility(false)} visible={modalVisibility}  transparent={true}>
+                        <ImageViewer onSave={()=>console.log('aaa')} renderHeader={()=>(<View></View>)} enableSwipeDown={true}  onSwipeDown={()=>setModalVisibility(false)} renderIndicator={()=>null} imageUrls={[{url:gql_question.img}]} />
+                    </Modal>
+                 </View>
+                 :null}
+                {/* {gql_question.img?<Image style={s.question_img} source={{uri:gql_question.img}}/>:null} */}
                 <FlatList
                     style={{width:'100%'}}
                     data={gql_question.choices}
@@ -144,6 +171,5 @@ export default function Question(props) {
 
         </View >
     );
-}
-
+})
 
