@@ -103,7 +103,7 @@ export default function Question(props) {
     return (
         <View style={s.Question}>
                 <View style={s.profile_view}>
-                    <Image style={s.profile_img} source={{uri:props.user_img}}/>
+                    <Image style={s.profile_img} source={{uri:(user.profile_pic?user.profile_pic:'https://i.stack.imgur.com/l60Hf.png')}}/>
                     <View>
                         <Text style={s.username}>{user.first_name} {user.last_name}</Text>
                         <Text style={s.since}>{since_when(props.time)}</Text>
@@ -124,7 +124,8 @@ export default function Question(props) {
                     <FlatList
                         style={{width:'100%'}}
                         data={props.choices}
-                        renderItem={(e)=><Answer_button ans={e.item} answer={props.answer} index={e.index} key={uuid()}/>}
+                        renderItem={(e)=><Answer_button ans={e.item} answer={props.answer} index={e.index}/>}
+                        keyExtractor={()=>uuid()}
                     />
                 {!answered && clicked!==null?<Button onPress={submitAnswer}>Submit</Button>:null}
 

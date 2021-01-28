@@ -1,4 +1,4 @@
-import React,{useState,useContext} from 'react';
+import React,{useState,useContext,useEffect} from 'react';
 import { StyleSheet, Text, View,Image, Modal,ToastAndroid ,FlatList, TouchableOpacity,Dimensions,PureComponent} from 'react-native';
 // import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import s from './styles/Question'
@@ -14,7 +14,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 
 
 export default React.memo(function Question(props) {
-    console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqstion '+props.id)
+    console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqstione '+props.id)
     const GET_QUESTION = gql `
     query question($id:Int!){
         question(id:$id){
@@ -28,6 +28,7 @@ export default React.memo(function Question(props) {
                 id
                 first_name
                 last_name
+                profile_pic
             }
         }
     }`
@@ -62,21 +63,30 @@ export default React.memo(function Question(props) {
     const [answered, setAnswered] = useState(false)
     const [modalVisibility, setModalVisibility] = useState(false)
     const [aspectRatio, setAspectRatio] = useState(1000)
-   
-    // console.log(User)
+    
+    useEffect(() => {
+        console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqstion ' + props.id)
+        if (!loading) {
+            if(data.question.img){
+            Image.getSize(gql_question.img, (srcWidth, srcHeight) => {
+                setAspectRatio(srcWidth / srcHeight)
+            }, (err) => {
+                // setAspectRatio(1)
+            })
+        }}
+    })
      props = {
         name: user.displayName,
         first_name: 'Fady',
         last_name: 'sadaqah',
-        user_img: '',
         question: (props.question ? props.question : 'How many lobes are ther in the brain'),
         // question_img: props.question_img,
         question_img: ('https://cdn.dribbble.com/users/1672258/screenshots/14942765/media/522e374719661a6a695303b4aeccfa87.png?compress=1&resize=800x600'),
-        user_img: user.photoURL ? user.photoURL:'https://images-na.ssl-images-amazon.com/images/I/81YDuTWSHyL.png',
+        profile_pic: user.photoURL ? user.photoURL : 'https://images-na.ssl-images-amazon.com/images/I/81YDuTWSHyL.png',
         choices: (props.choices?props.choices:['One', 'Two', 'Three', 'Four', 'Five', 'Six']),
         answer:props.answer?props.answer:0,
         question_id:props.question_id
-        ,
+        ,...props
     }
    
 
@@ -133,17 +143,11 @@ export default React.memo(function Question(props) {
     if(loading) return <></>
     // if(loading) return <Loading/>
     let gql_question=data.question
-     if (gql_question.img) {
-        Image.getSize(gql_question.img, (srcWidth, srcHeight) => {
-            setAspectRatio(srcWidth/srcHeight)
-        },(err)=>{
-            // setAspectRatio(1)
-        })
-     }
+     
     return (
         <View style={s.Question}>
                 <View style={s.profile_view}>
-                    <Image style={s.profile_img}  source={{uri:props.user_img}}/>
+                    <Image style={s.profile_img}  source={{uri:(gql_question.user.profile_pic?gql_question.user.profile_pic:'https://i.stack.imgur.com/l60Hf.png')}}/>
                     <View>
                         <Text style={s.username}>{gql_question.user.first_name} {gql_question.user.last_name}</Text>
                         <Text style={s.since}>{since_when(gql_question.time)}</Text>
@@ -164,8 +168,8 @@ export default React.memo(function Question(props) {
                 <FlatList
                     style={{width:'100%'}}
                     data={gql_question.choices}
-                    renderItem={(e)=><Answer_button ans={e.item} answer={props.answer} key={uuid()} index={e.index}/>}
-                    // keyExtractor={uuid}
+                    renderItem={(e)=><Answer_button ans={e.item} answer={props.answer} index={e.index}/>}
+                    keyExtractor={()=>uuid()}
                 />
                 {!answered && clicked!==null?<Button onPress={submitAnswer}>Submit</Button>:null}
 

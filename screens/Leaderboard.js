@@ -1,13 +1,15 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {View,Text,Image,FlatList,RefreshControl,StyleSheet} from 'react-native'
 import Loading from '../components/Loading'
 import Header from '../components/Header'
 import {gql,useQuery} from '@apollo/client'
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid';
 
 const styles=StyleSheet.create({
     main:{
         backgroundColor:'white',
-        display:'flex',
+        // display:'flex',
         flex:1,
     },
     board:{
@@ -75,6 +77,7 @@ const styles=StyleSheet.create({
 })
 const Board=(props)=>{
         let background='white'
+        const [profilePic,setProfilePic]=useState(props.item.profile_pic)
         if(props.index==0){
             // background = '#ffcc00'
             background = '#fee101'
@@ -92,7 +95,7 @@ const Board=(props)=>{
         <View style ={styles.board} backgroundColor = {background}>
             <View style={styles.img_container}>
                 <Text style={styles.rank}>{props.index+1}</Text>
-                <Image style={styles.img} source={{uri:'https://images-na.ssl-images-amazon.com/images/I/81YDuTWSHyL.png'}}/>   
+                <Image style={styles.img} onError={()=>setProfilePic('https://i.stack.imgur.com/l60Hf.png')} source={{uri:profilePic}}/>   
             </View>
             <Text style={styles.name}>{props.item.first_name} {props.item.last_name}</Text>
             <Text style={styles.points}>{props.item.points}</Text>
@@ -105,28 +108,31 @@ query leaderboard($count: Int) {
         first_name
         last_name
         email
+        profile_pic
         points
     }
 }
 `
-function Leaderboard() {
+function Leaderboard(props) {
     const {loading,error,data,refetch}=useQuery(LeaderBoardQuery,
         {variables:{count:1},
-        // fetchPolicy: 'cache-and-network',
+        fetchPolicy: 'cache-and-network',
         // pollInterval:10000
     })
+    const drawer_navigation = props.route.params.drawer_navigation
     // console.log(data.leaderboard[0])
-    if(loading) return <Loading/>
+    if(loading ) return <><Header  drawer_navigation={drawer_navigation}/><Loading/></>
     console.log(data.leaderboard[0])
     return (
         <>
-        <Header/>
+        <Header drawer_navigation={drawer_navigation}/>
         <View style={styles.main}>
             <FlatList
                 style={{paddingTop:15}}
                 data={data.leaderboard}
                 renderItem={(item)=><Board {...item}/>}
                 refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch}/>}
+                keyExtractor={()=>uuid()}
 
             />
         </View>

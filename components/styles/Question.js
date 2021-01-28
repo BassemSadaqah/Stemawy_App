@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start'
     },
     profile_img: {
-        width: '12%',
+        width: 45,
         borderRadius: 10000,
         aspectRatio: 1,
         marginRight:10,

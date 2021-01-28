@@ -117,20 +117,15 @@ function Profile(props) {
     const [err, setErr] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
     const drawer_navigation = props.route.params.drawer_navigation
-    useEffect(() => {
-    //     
-    },[])
+    var profile_pic = 'https://i.stack.imgur.com/l60Hf.png'
+    if(user.fb_id){
+        var profile_pic = `https://graph.facebook.com/v9.0/${user.fb_id}/picture?type=large`
+        console.log(profile_pic)
+    }
 
-    if(err || error) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
-    if(loading || refreshing) return <><Header/><Loading/></>
-    console.log(data)
-    // setRefreshing(false)
-    // console.log(data.userQuestions)
-    return (
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}>
-        <Header drawer_navigation={drawer_navigation}/>
+    const ProfileHeader=()=>(
         <View style={styles.container}>
-            <Image style={styles.profile_img} source={{uri:'https://images-na.ssl-images-amazon.com/images/I/81YDuTWSHyL.png'}}/>
+            <Image style={styles.profile_img} source={{uri:profile_pic}}/>
             <Text style={styles.profile_name}>{user.first_name} {user.last_name}</Text>
             <Text style={styles.bio}>Born to Die</Text>
             <View style={styles.data_container}>
@@ -147,7 +142,7 @@ function Profile(props) {
                     <Text style={styles.followers_text}>Rank</Text>
                 </View>
             </View>
-            {/* <View style={styles.tabs}>
+             {/* <View style={styles.tabs}>
                 <MaterialCommunityIcons name="home" color={'blue'} size={30} />
                 <MaterialCommunityIcons name="heart" color={'gray'} size={30} />
                 <MaterialCommunityIcons name="bookmark" color={'gray'} size={30} />
@@ -156,14 +151,30 @@ function Profile(props) {
             {/* <View style={styles.upload}>
                 <Text style={styles.upload_text}>What's your question?</Text>
             </View> */}
-            <FlatList
-                onScroll={()=>console.log('q[[')}
-                style={{width:'100%',marginBottom:20}}
-                data={(data.user.questions)}            
-                renderItem={({item})=><Question {...item} key={uuid()} />}
-                />
         </View>
-        </ScrollView>
+    )
+
+
+
+    if(err || error) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
+    if(loading || refreshing) return <><Header/><Loading/></>
+    console.log(data)
+    // setRefreshing(false)
+    // console.log(data.userQuestions)
+    return (
+        // <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}>
+        <>   
+        <Header drawer_navigation={drawer_navigation}/>
+            <FlatList
+                style={{width:'100%',backgroundColor:'white'}}
+                ListHeaderComponent={ProfileHeader}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}
+                data={(data.user.questions)}            
+                renderItem={({item})=><Question {...item}  />}
+                keyExtractor={()=>uuid()}
+                />
+        </>
+        // </ScrollView>
     )
 }
 

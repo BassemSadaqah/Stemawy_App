@@ -18,7 +18,7 @@ function Feed(props) {
     const [loading, setLoading] = useState(false)
     const [err, setErr] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
-    const [ids, setIds] = useState([10,20,30,40,50,60]);
+    const [ids, setIds] = useState([Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300)]);
     const {user} = useContext(userContext)
     console.log(user)
     useEffect(()=>{
@@ -58,10 +58,12 @@ function Feed(props) {
         console.log(ratio)
         // if(ratio>85
     }
-    const loadMore=()=>{
+    const loadMore=(e)=>{
+        console.log('11111111111111111')
+        console.log(e)
         setIds((i)=>{
-            console.log('11111111111111111')
             let z=i;
+            // z.push(100,200,300  );
             z.push(Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300));
             return z
         })
@@ -76,10 +78,12 @@ function Feed(props) {
             // onScroll={handleScroll}
             data={ids}
             // data={[100,200,12,34,53,112,311,165,187, 222,190,98]}
-            initialNumToRender={5}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{setIds([Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300)])}} />}
+            initialNumToRender={10}Z
             onEndReachedThreshold={0.9}
             onEndReached={loadMore}
-            renderItem={({item})=><Question_Gql id={item}  key={item.index}/>}
+            renderItem={(e)=><Question_Gql id={e.item}  key={e.index}/>}
+            // keyExtractor={()=>uuid()}
             />
             {/* <ScrollView onScroll={handleScroll}>
                 <Question_Gql key={235} id={100}/>

@@ -1,6 +1,8 @@
 import React,{useState,useEffect} from 'react'
 import { StyleSheet,TextInput, View,Text,Image,FlatList, TouchableOpacity } from 'react-native';
 import Input from '../../components/Input'
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid';
 import Button from '../../components/Button'
 
 const styles = StyleSheet.create({
@@ -96,7 +98,7 @@ function Step3(props) {
     return (
        <View style={styles.Question}>
             <View style={styles.profile_view}>
-                <Image style={styles.profile_img} source={{uri:'https://images-na.ssl-images-amazon.com/images/I/81YDuTWSHyL.png'}}/>
+                <Image style={styles.profile_img} source={{uri:user.profile_pic?user.profile_pic:'https://i.stack.imgur.com/l60Hf.png'}}/>
                 <View>
                     <Text style={styles.username}>{user.first_name} {user.last_name}</Text>
                     <Text style={styles.since}>Just Now</Text>
@@ -108,8 +110,8 @@ function Step3(props) {
                 style={{width:'100%'}}
                 data={choices}
                 renderItem={(e)=><Answer_button ans={e.item} index={e.index+1}/>}
-                keyExtractor={item => item.id}
-            />
+                keyExtractor={()=>uuid()}
+                />
             <Answer_button ans="I don't know the answer" index={0}/>
             <View style={styles.btns}>
                 <Button text_style={styles.back_txt} onPress={()=>setStep(s=>s-1)}  style={styles.back}>Back</Button>

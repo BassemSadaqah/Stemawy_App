@@ -4,7 +4,8 @@ import Input from '../../components/Input'
 import Button from '../../components/Button'
 import Choice from './Choice'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid';
 const styles = StyleSheet.create({
 
     Question: {
@@ -102,7 +103,7 @@ function Step2(props) {
     return (
     <View style={styles.step_2}>
             <View style={styles.profile_view}>
-                <Image style={styles.profile_img} source={{uri:'https://images-na.ssl-images-amazon.com/images/I/81YDuTWSHyL.png'}}/>
+                <Image style={styles.profile_img} source={{uri:user.profile_pic?user.profile_pic:'https://i.stack.imgur.com/l60Hf.png'}}/>
                 <View>
                     <Text style={styles.username}>{user.first_name} {user.last_name}</Text>
                     <Text style={styles.since}>Just Now</Text>
@@ -112,7 +113,10 @@ function Step2(props) {
             {question_img? <Image style={styles.question_img} source={{uri:question_img.uri}}/>:<></>}
 
             <View style={styles.choices_container}>
-                <FlatList data={choices} renderItem={({index})=><Choice setChoices={setChoices} choices={choices} index={index} key={index*55}/>} />
+                <FlatList 
+                    data={choices}
+                    renderItem={({index})=><Choice setChoices={setChoices} choices={choices} index={index} />}
+                    keyExtractor={()=>uuid()} />
             </View>
             {choices.length<4 && <Button onPress={()=>addChoice(choices,setChoices)} text_style={{color:'#575757'}} style={styles.add_choice}>Add Choice</Button>}
             <View style={styles.btns}>

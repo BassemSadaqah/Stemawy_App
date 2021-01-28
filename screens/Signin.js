@@ -7,13 +7,13 @@ import Input from '../components/Input'
 import {userContext} from '../App'
 import styles from './styles/Signin'
 import axios from 'axios'
-// import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
 
 const submitForm=(form_data,setUser)=>{
     // setUser({id:1,email:'ee'})
     const {email,password}=form_data
     if(!email || !password) return ToastAndroid.show('Please Enter Valid Data', ToastAndroid.SHORT);
-     axios.post('https://stemawy-app.herokuapp.com//login',form_data)
+     axios.post('https://stemawy-app.herokuapp.com/login',form_data)
     .then(({data})=>{
         if(data.success && data.accessToken &&data.user){
             console.log(data)
@@ -30,23 +30,38 @@ const submitForm=(form_data,setUser)=>{
 
 }
 const fbSignin=async (setUser)=>{
-//     // Attempt login with permissions
-//   const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
-//   if (result.isCancelled) {
-//     throw 'User cancelled the login process';
-//   }
-//   // Once signed in, get the users AccesToken
-//   const data = await AccessToken.getCurrentAccessToken();
-// //   console.log(data)
-//   if (!data) {
-//     throw 'Something went wrong obtaining access token';
-//   }
-//   // Create a Firebase credential with the AccessToken
-//   // console.log(data.accessToken)
+    // Attempt login with permissions
+  const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+  if (result.isCancelled) {
+    throw 'User cancelled the login process';
+  }
+  // Once signed in, get the users AccesToken
+  const data = await AccessToken.getCurrentAccessToken();
+//   console.log(data)
+  if (!data) {
+    throw 'Something went wrong obtaining access token';
+  }
+  // Create a Firebase credential with the AccessToken
+  console.log(data.accessToken)
+   axios.post('https://stemawy-app.herokuapp.com/fb-login',{access_token:data.accessToken})
+    .then(({data})=>{
+        console.log(data)
+        if(data.success && data.accessToken &&data.user){
+            console.log(data)
+            AsyncStorage.setItem('accessToken', data.accessToken).then(() => {
+                setUser({isSigned:true,...data.user})
+            })
+        }else{
+            ToastAndroid.show(data.err_msg,ToastAndroid.SHORT)
+        }
+    }).catch(err=>{
+        console.log(err)
+        ToastAndroid.show('Something Went Wrong', ToastAndroid.SHORT)
+    })
 //   const facebookCredential = firebase.auth.FacebookAuthProvider.credential(data.accessToken);
-//   // AsyncStorage.setItem('fb_user',JSON.stringify({email:facebookCredential.email,}))
-//   // console.log(facebookCredential)
-//   // Sign-in the user with the credential
+  // AsyncStorage.setItem('fb_user',JSON.stringify({email:facebookCredential.email,}))
+//   console.log(facebookCredential)
+  // Sign-in the user with the credential
 //   firebase.auth().signInWithCredential(facebookCredential).then(data=>{
 //     const user=data.user._user
 
