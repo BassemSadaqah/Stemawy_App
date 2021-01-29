@@ -12,6 +12,7 @@ import Intro from './screens/Intro';
 import Signin from './screens/Signin'
 import Signup from './screens/Signup'
 import FeedTabs from './screens/FeedTabs'
+import Profile from './screens/Profile'
 import Settings from './screens/Settings'
 import Loading from './components/Loading';
 import { NavigationContainer } from '@react-navigation/native';
@@ -28,6 +29,7 @@ import { onError } from "@apollo/client/link/error";
 
 
 const AuthStack = createStackNavigator();
+const FeedStack = createStackNavigator();
 const FeedDrawer = createDrawerNavigator();
 export const userContext = createContext({ name: 'Bassem Sadaqah' })
 
@@ -130,11 +132,16 @@ function App() {
             <AuthStack.Screen name="Signin" component={Signin} initialParams={{ user, setUser }} />
             <AuthStack.Screen name="Signup" component={Signup} initialParams={{ user, setUser }} />
           </AuthStack.Navigator> :
-          <FeedDrawer.Navigator initialRouteName="Home">
-            <FeedDrawer.Screen name="Home" component={FeedTabs} />
-            <FeedDrawer.Screen name="Settings" component={Settings} />
-            <FeedDrawer.Screen name="Logout" component={Logout} initialParams={{ user, setUser }} />
-          </FeedDrawer.Navigator>
+          <FeedStack.Navigator screenOptions={{ headerShown: false }}>
+            <FeedStack.Screen name="Feed" component={FeedTabs} />
+            <FeedStack.Screen name="Settings" component={Settings} />
+            <FeedStack.Screen name="Profile" component={Profile} />
+          </FeedStack.Navigator> 
+          // <FeedDrawer.Navigator initialRouteName="Home">
+          //   <FeedDrawer.Screen name="Home" component={FeedTabs} />
+          //   <FeedDrawer.Screen name="Settings" component={Settings} />
+          //   <FeedDrawer.Screen name="Logout" component={Logout} initialParams={{ user, setUser }} />
+          // </FeedDrawer.Navigator>
         }
       </NavigationContainer>
     </userContext.Provider>

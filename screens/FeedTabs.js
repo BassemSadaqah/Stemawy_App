@@ -30,7 +30,7 @@ export default function FeedTabs({navigation}) {
     >
      
       <Tab.Screen
-        name="Feed"
+        name="Home"
         component={Feed}
         initialParams={{drawer_navigation:navigation}}
         options={{
@@ -53,7 +53,7 @@ export default function FeedTabs({navigation}) {
         }}
       />
       <Tab.Screen
-        name="Notifications"
+        name="Upload"
         component={Upload}
         initialParams={{drawer_navigation:navigation}}
         options={{

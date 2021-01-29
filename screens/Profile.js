@@ -98,6 +98,10 @@ const styles=StyleSheet.create({
 const GET_USER_QUESTIONS = gql `
 query user_questions($id:Int!){
     user(id:$id){
+        first_name
+        last_name
+        fb_id
+        profile_pic
         questions{
             id
             question
@@ -110,22 +114,17 @@ query user_questions($id:Int!){
 }`
 
 function Profile(props) {
-    const {user} = useContext(userContext)
+    console.log(props.route.params.id)
     // const [loading,setLoading]=useState(true)
-    const { loading, error, data,refetch } = useQuery(GET_USER_QUESTIONS,{variables:{id:user.id}});
+    const { loading, error, data,refetch } = useQuery(GET_USER_QUESTIONS,{variables:{id:2145 }});
     const [questions,setQuestions]=useState([])
-    const [err, setErr] = useState(false)
+    const [err, setErr] = useState(false) 
     const [refreshing, setRefreshing] = useState(false);
-    const drawer_navigation = props.route.params.drawer_navigation
-    var profile_pic = 'https://i.stack.imgur.com/l60Hf.png'
-    if(user.fb_id){
-        var profile_pic = `https://graph.facebook.com/v9.0/${user.fb_id}/picture?type=large`
-        console.log(profile_pic)
-    }
+    
 
-    const ProfileHeader=()=>(
+    const ProfileHeader=({user})=>(
         <View style={styles.container}>
-            <Image style={styles.profile_img} source={{uri:profile_pic}}/>
+            <Image style={styles.profile_img} source={{uri:user.profile_pic}}/>
             <Text style={styles.profile_name}>{user.first_name} {user.last_name}</Text>
             <Text style={styles.bio}>Born to Die</Text>
             <View style={styles.data_container}>
@@ -159,19 +158,25 @@ function Profile(props) {
     if(err || error) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
     if(loading || refreshing) return <><Header/><Loading/></>
     console.log(data)
+    var user=data.user
+    user.profile_pic = 'https://i.stack.imgur.com/l60Hf.png'
+    if(user.fb_id){
+        user.profile_pic = `https://graph.facebook.com/v9.0/${user.fb_id}/picture?type=large`
+        console.log(profile_pic)
+    }
     // setRefreshing(false)
     // console.log(data.userQuestions)
     return (
         // <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}>
         <>   
-        <Header drawer_navigation={drawer_navigation}/>
+        {/* <Header drawer_navigation={drawer_navigation}/> */}
             <FlatList
                 style={{width:'100%',backgroundColor:'white'}}
-                ListHeaderComponent={ProfileHeader}
+                // ListHeaderComponent={()=><ProfileHeader user={user}/>}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}
                 data={(data.user.questions)}            
                 renderItem={({item})=><Question {...item}  />}
-                keyExtractor={()=>uuid()}
+                // keyExtractor={()=>uuid()}
                 />
         </>
         // </ScrollView>

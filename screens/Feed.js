@@ -82,7 +82,7 @@ function Feed(props) {
             initialNumToRender={10}Z
             onEndReachedThreshold={0.9}
             onEndReached={loadMore}
-            renderItem={(e)=><Question_Gql id={e.item}  key={e.index}/>}
+            renderItem={(e)=><Question_Gql id={e.item} navigation={props.navigation}  key={e.index}/>}
             // keyExtractor={()=>uuid()}
             />
             {/* <ScrollView onScroll={handleScroll}>
