@@ -9,7 +9,7 @@ import { v4 as uuid } from 'uuid';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 function since_when(previous) {
-    var current = Date.parse(new Date().toUTCString())-7200000;
+    var current = Date.parse(new Date().toUTCString()); //-7200000
     var msPerMinute = 60 * 1000;
     var msPerHour = msPerMinute * 60;
     var msPerDay = msPerHour * 24;

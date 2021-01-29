@@ -12,6 +12,7 @@ import Intro from './screens/Intro';
 import Signin from './screens/Signin'
 import Signup from './screens/Signup'
 import FeedTabs from './screens/FeedTabs'
+import Settings from './screens/Settings'
 import Loading from './components/Loading';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -80,7 +81,7 @@ function App() {
     const {setUser}=route.params
         AsyncStorage.removeItem('accessToken')
         setUser({isSigned:false})
-        client.resetStore()
+        client.clearStore()
       // Sign-out successful.
     return(<></>)
   }
@@ -130,7 +131,8 @@ function App() {
             <AuthStack.Screen name="Signup" component={Signup} initialParams={{ user, setUser }} />
           </AuthStack.Navigator> :
           <FeedDrawer.Navigator initialRouteName="Home">
-            <FeedDrawer.Screen name="Feed" component={FeedTabs} />
+            <FeedDrawer.Screen name="Home" component={FeedTabs} />
+            <FeedDrawer.Screen name="Settings" component={Settings} />
             <FeedDrawer.Screen name="Logout" component={Logout} initialParams={{ user, setUser }} />
           </FeedDrawer.Navigator>
         }

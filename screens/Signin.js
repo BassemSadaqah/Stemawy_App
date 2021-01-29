@@ -4,6 +4,7 @@ import { StyleSheet,Text, View,TextInput,ScrollView,ToastAndroid,Keyboard,Toucha
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Button from '../components/Button'
 import Input from '../components/Input'
+import Loading from '../components/Loading'
 import {userContext} from '../App'
 import styles from './styles/Signin'
 import axios from 'axios'
@@ -29,9 +30,10 @@ const submitForm=(form_data,setUser)=>{
     })
 
 }
-const fbSignin=async (setUser)=>{
+const fbSignin=async (setUser,setLoading)=>{
     // Attempt login with permissions
   const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+  setLoading(true)
   if (result.isCancelled) {
     throw 'User cancelled the login process';
   }
@@ -50,11 +52,13 @@ const fbSignin=async (setUser)=>{
             console.log(data)
             AsyncStorage.setItem('accessToken', data.accessToken).then(() => {
                 setUser({isSigned:true,...data.user})
+                setLoading(false)
             })
         }else{
             ToastAndroid.show(data.err_msg,ToastAndroid.SHORT)
         }
     }).catch(err=>{
+        setLoading(false)
         console.log(err)
         ToastAndroid.show('Something Went Wrong', ToastAndroid.SHORT)
     })
@@ -88,15 +92,17 @@ const fbSignin=async (setUser)=>{
 }
 function Signin() {
     const {user,setUser}=useContext(userContext)
+    const [loading,setLoading]=useState(false)
     console.log(user)
     const [form_data, setFormData] = useState({ err: false, err_msg: '', email: '', password: '' })
+    if(loading) return <Loading/>
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.main} >
                 <Input onChange={(txt)=>{setFormData(s=>({...s,email:txt}))}} placeholder='Email' defaultValue={form_data.email} keyboardType='email-address'/>     
                 <Input onChange={(txt)=>{setFormData(s=>({...s,password:txt}))}} placeholder='Password' secureTextEntry/>     
                 <Button onPress={()=>{submitForm(form_data,setUser)}} style={styles.btn}>Sign In</Button>
-                <Button onPress={()=>{fbSignin(setUser)}} style={styles.btn_social}>Sign In With Facebook</Button>
+                <Button onPress={()=>{fbSignin(setUser,setLoading)}} style={styles.btn_social}>Sign In With Facebook</Button>
             </View>
         </TouchableWithoutFeedback>
     )

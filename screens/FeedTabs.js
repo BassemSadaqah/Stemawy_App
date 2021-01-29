@@ -1,22 +1,34 @@
 import React, { useState } from 'react'
 import Feed from './Feed'
 import Upload from './Ask/Upload'
-import Profile from './Profile'
+import MyProfile from './MyProfile'
 import Leaderboard from './Leaderboard'
+import Burger from './Burger'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { NavigationContainer } from '@react-navigation/native';
 
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createMaterialTopTabNavigator();
+// const Tab = createMaterialBottomTabNavigator();
 
 export default function FeedTabs({navigation}) {
   return (
     <Tab.Navigator
+      // tabBarPosition = 'bottom'
       initialRouteName="Feed"
       activeColor="#fff"
-      barStyleeee={{ backgroundColor: 'red' }} 
+      barStyle={{ backgroundColor: 'red' }} 
+      tabBarOptions={{
+          showIcon: true,
+          showLabel:false,
+          // tabStyle:{backgroundColor:'#007AFF'}
+          // inactiveTintColor:'blue',
+          // activeTintColor:'red'
+      }}
     >
+     
       <Tab.Screen
         name="Feed"
         component={Feed}
@@ -33,7 +45,8 @@ export default function FeedTabs({navigation}) {
         component={Leaderboard}
         initialParams={{drawer_navigation:navigation}}
         options={{
-          tabBarLabel: 'Leaderboard',
+          tabBarLabel: '',
+          // tabBarLabel: 'Leaderboard',
           tabBarIcon: ({ color }) => (
             <Icon name='trophy' size={24} color={color}/>
           ),
@@ -52,13 +65,24 @@ export default function FeedTabs({navigation}) {
         }}
       />
       <Tab.Screen
-        name="Profile"
-        component={Profile}
+        name="MyProfile"
+        component={MyProfile}
         initialParams={{drawer_navigation:navigation}}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="account" color={color} size={26} />
+          ),
+        }}
+      />
+       <Tab.Screen
+        name="Menu"
+        component={Burger}
+        initialParams={{drawer_navigation:navigation}}
+        options={{
+          tabBarLabel: 'Menu',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="menu" color={color} size={26} />
           ),
         }}
       />

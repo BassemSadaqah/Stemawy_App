@@ -1,15 +1,14 @@
 import React,{useContext} from 'react'
 import {View,Text,StyleSheet,Image,TouchableOpacity} from 'react-native'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Input from '../components/Input'
 import {userContext} from '../App'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
 
 
 const styles=StyleSheet.create({
     header:{
-        backgroundColor: '#D50000',
-        // backgroundColor:'#222222',
+        backgroundColor:'#222222',
         height:50,
         display:'flex',
         alignItems:'center',
@@ -36,12 +35,16 @@ const styles=StyleSheet.create({
         marginRight:10
     }
 })
-function Header({drawer_navigation}) {
+function Header() {
+    const navigation = useNavigation();
+    // console.log(navigation)
     const {user} = useContext(userContext)
-    return <></>
     return (
         <View style={styles.header}>
-            <MaterialCommunityIcons onPress={()=>drawer_navigation.openDrawer()} name="menu" color={'#fff'} size={32} />
+            <TouchableOpacity onPress={()=>navigation.navigate('Home')} >
+                <Icon name="arrow-left" color={'#fff'} size={24} />
+            </TouchableOpacity>
+            <Text style={{color:'white',fontSize:20}}>Settings</Text>
             {/* <Input style={styles.search} placeholder='Search'/> */}
             {/* <Image style={styles.profile_img} source={{uri:(user.profile_pic?user.profile_pic:'https://i.stack.imgur.com/l60Hf.png')}}/> */}
             < TouchableOpacity>
