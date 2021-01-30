@@ -35,13 +35,15 @@ const fbSignin=async (setUser,setLoading)=>{
   const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
   setLoading(true)
   if (result.isCancelled) {
-    throw 'User cancelled the login process';
+    return setLoading(false)
+    // throw 'User cancelled the login process';
   }
   // Once signed in, get the users AccesToken
   const data = await AccessToken.getCurrentAccessToken();
-//   console.log(data)
   if (!data) {
-    throw 'Something went wrong obtaining access token';
+    setLoading(false)
+    return ToastAndroid.show('Something Went Wrong', ToastAndroid.SHORT)
+    // throw 'Something went wrong obtaining access token';
   }
   // Create a Firebase credential with the AccessToken
   console.log(data.accessToken)

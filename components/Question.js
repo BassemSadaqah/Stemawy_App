@@ -1,4 +1,4 @@
-import React,{useState,useContext} from 'react';
+import React,{useState,useContext,useEffect} from 'react';
 import { StyleSheet, Text, View,Image, Modal,ToastAndroid ,FlatList, TouchableOpacity} from 'react-native';
 // import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import s from './styles/Question'
@@ -33,7 +33,10 @@ function since_when(previous) {
     }
 }
 export default function Question(props) {
+    // console.log(props)
     const {user}=useContext(userContext)
+    // const user=props.user
+    // const question=props.user.quesion
     const [clicked, setClicked] = useState(null)
     const [answered, setAnswered] = useState(false)
     const [modalVisibility, setModalVisibility] = useState(false)
@@ -53,6 +56,15 @@ export default function Question(props) {
         question_id:props.question_id,
         ...props
     }
+    useEffect(() => {
+        if(props.img){
+            Image.getSize(props.img, (srcWidth, srcHeight) => {
+                setAspectRatio(srcWidth / srcHeight)
+            }, (err) => {
+                // setAspectRatio(1)
+            })
+        }
+    })
     const submitAnswer=()=>{
         // console.log(clicked)
         // // console.log(props.answer)
@@ -103,9 +115,9 @@ export default function Question(props) {
     return (
         <View style={s.Question}>
                 <View style={s.profile_view}>
-                    <Image style={s.profile_img} source={{uri:(user.profile_pic?user.profile_pic:'https://i.stack.imgur.com/l60Hf.png')}}/>
+                    <Image style={s.profile_img} source={{uri:(props.profile_pic?props.profile_pic:'https://i.stack.imgur.com/l60Hf.png')}}/>
                     <View>
-                        <Text style={s.username}>{user.first_name} {user.last_name}</Text>
+                        <Text style={s.username}>{props.first_name} {props.last_name}</Text>
                         <Text style={s.since}>{since_when(props.time)}</Text>
                     </View>
                 </View>
@@ -113,7 +125,7 @@ export default function Question(props) {
                 {props.img?
                  <View>
                      <TouchableOpacity onPress={()=>{setModalVisibility(true)}}>
-                        <Image style={s.question_img}  source={{uri:props.img}}/>
+                        <Image style={{...s.question_img,aspectRatio}}  source={{uri:props.img}}/>
                      </TouchableOpacity>
                     <Modal  animationType='none' onRequestClose={()=>setModalVisibility(false)} visible={modalVisibility}  transparent={true}>
                         <ImageViewer renderHeader={()=>(<View></View>)} enableSwipeDown={true}  onSwipeDown={()=>setModalVisibility(false)} renderIndicator={()=>null} imageUrls={[{url:props.img}]} />

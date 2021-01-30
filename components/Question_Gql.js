@@ -147,7 +147,7 @@ export default React.memo(function Question(props) {
     return (
         <View style={s.Question}>
             {/* <TouchableOpacity> */}
-                <TouchableOpacity onPress={()=>props.navigation.navigate('Profile',{id:props.id})} style={s.profile_view}>
+                <TouchableOpacity onPress={()=>props.navigation.navigate('Profile',{id:gql_question.user.id})} style={s.profile_view}>
                     <Image style={s.profile_img}  source={{uri:(gql_question.user.profile_pic?gql_question.user.profile_pic:'https://i.stack.imgur.com/l60Hf.png')}}/>
                     <View>
                         <Text style={s.username}>{gql_question.user.first_name} {gql_question.user.last_name}</Text>

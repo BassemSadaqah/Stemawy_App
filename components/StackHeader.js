@@ -2,28 +2,31 @@ import React,{useContext} from 'react'
 import {View,Text,StyleSheet,Image,TouchableOpacity} from 'react-native'
 import Input from '../components/Input'
 import {userContext} from '../App'
-import Icon from 'react-native-vector-icons/FontAwesome';
+// import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 
 
 const styles=StyleSheet.create({
     header:{
-        backgroundColor:'#222222',
-        height:50,
+        // backgroundColor:'#222222',
+        borderBottomColor:'gray',
+        // borderBottomWidth:1,
+        backgroundColor:'white',
+        height:45,
         display:'flex',
         alignItems:'center',
-        justifyContent:'space-between',
+        // justifyContent:'',
         flexDirection:'row',
         paddingHorizontal:10,
-    },
-    search:{
-        backgroundColor:'white',
-        width:'70%',
-        height:30,
-        borderRadius:15,
-        paddingHorizontal:15,
-        paddingVertical:0,
-        marginLeft:-10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 0,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 2.5,
+        elevation: 2,       
     },
     profile_img: {
         width: 38,
@@ -31,24 +34,32 @@ const styles=StyleSheet.create({
         aspectRatio: 1,
         // marginRight: 20,
     },
+    txt:{
+        color: 'black',
+        fontSize: 20
+    },
+    back:{
+        marginLeft:2,
+        marginRight:20
+    },
     bell:{
         marginRight:10
     }
 })
-function Header() {
+function Header(props) {
     const navigation = useNavigation();
     // console.log(navigation)
     const {user} = useContext(userContext)
     return (
         <View style={styles.header}>
             <TouchableOpacity onPress={()=>navigation.navigate('Home')} >
-                <Icon name="arrow-left" color={'#fff'} size={24} />
+                <Icon name="arrowleft" style={styles.back} color={'black'} size={25} />
             </TouchableOpacity>
-            <Text style={{color:'white',fontSize:20}}>Settings</Text>
+            <Text style={styles.txt}>{props.title}</Text>
             {/* <Input style={styles.search} placeholder='Search'/> */}
             {/* <Image style={styles.profile_img} source={{uri:(user.profile_pic?user.profile_pic:'https://i.stack.imgur.com/l60Hf.png')}}/> */}
             < TouchableOpacity>
-                <Icon style={styles.bell} name='bell' size={24} color={'white'}/>
+                {/* <Icon style={styles.bell} name='bell' size={24} color={'black'}/> */}
             </TouchableOpacity>
 
         </View>

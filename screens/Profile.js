@@ -1,9 +1,10 @@
 import React,{useState,useEffect,useContext} from 'react'
-import { StyleSheet,TextInput, View,Text,Image,FlatList, TouchableOpacity,ScrollView,RefreshControl } from 'react-native';
+import { StyleSheet,TextInput, View,Text,Image,FlatList, TouchableOpacity,ScrollView,RefreshControl,ActivityIndicator } from 'react-native';
 import Header from '../components/Header'
 import Hr from '../components/Hr'
 import Question from '../components/Question'
 import Loading from '../components/Loading'
+import StackHeader from '../components/StackHeader'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import Err from '../components/Err'
@@ -96,13 +97,26 @@ const styles=StyleSheet.create({
 })
 
 const GET_USER_QUESTIONS = gql `
-query user_questions($id:Int!){
+query user_questions($id:Int!,$offset:Int){
     user(id:$id){
         first_name
         last_name
-        fb_id
         profile_pic
-        questions{
+        points
+        questions(limit:5,offset:$offset){
+            id
+            question
+            img
+            choices
+            answer
+            time
+        }
+    }
+}`
+const QUESTIONS_FETCH_MORE = gql `
+query user_questions($id:Int!,$offset:Int){
+    user(id:$id){
+        questions(limit:5,offset:$offset){
             id
             question
             img
@@ -113,18 +127,46 @@ query user_questions($id:Int!){
     }
 }`
 
+
 function Profile(props) {
-    console.log(props.route.params.id)
+    const user_id = props.route.params.id
+    console.log(user_id)
     // const [loading,setLoading]=useState(true)
-    const { loading, error, data,refetch } = useQuery(GET_USER_QUESTIONS,{variables:{id:2145 }});
+    const { loading, error, data,refetch,fetchMore } = useQuery(GET_USER_QUESTIONS,{variables:{id:user_id,offset:0}});
     const [questions,setQuestions]=useState([])
     const [err, setErr] = useState(false) 
     const [refreshing, setRefreshing] = useState(false);
-    
-
+    const [offset, setOffset] = useState(5);
+    const [fetchingMore, setFetchingMore] = useState(false);
+    const [finished, setFinished] = useState(false);
+    const updateQuery=(previousResult, { fetchMoreResult })=>{
+         if (!fetchMoreResult) {
+            setFetchingMore(false)
+            setFinished(true)
+            return previousResult;
+         }
+         if (!fetchMoreResult.user.questions.length){
+              setFetchingMore(false)
+              setFinished(true)
+              return previousResult;
+         }
+         setOffset(offset+5)
+         setFetchingMore(false)
+         return {...previousResult,user:{...previousResult.user,questions:[...previousResult.user.questions,...fetchMoreResult.user.questions]}}
+         console.log(previousResult)
+         console.log(fetchMoreResult)
+    }
+    const loadMore = (fetchMore) => {
+        if(!loading && !fetchingMore && !finished){
+            setFetchingMore(true)
+            console.log('aaaaa')
+            fetchMore({query:QUESTIONS_FETCH_MORE,updateQuery,variables:{id:user_id,offset}})
+            console.log('aaaaa')
+        }
+    }
     const ProfileHeader=({user})=>(
         <View style={styles.container}>
-            <Image style={styles.profile_img} source={{uri:user.profile_pic}}/>
+            <Image style={styles.profile_img} source={{uri:user.profile_pic+'?type=large'}}/>
             <Text style={styles.profile_name}>{user.first_name} {user.last_name}</Text>
             <Text style={styles.bio}>Born to Die</Text>
             <View style={styles.data_container}>
@@ -133,7 +175,7 @@ function Profile(props) {
                     <Text style={styles.followers_text}>Followers</Text>
                 </View>
                 <View style={styles.followers}>
-                    <Text style={styles.followers_count}>150</Text>
+                    <Text style={styles.followers_count}>{user.points}</Text>
                     <Text style={styles.followers_text}>Points</Text>
                 </View>
                 <View style={styles.followers}>
@@ -158,26 +200,32 @@ function Profile(props) {
     if(err || error) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
     if(loading || refreshing) return <><Header/><Loading/></>
     console.log(data)
-    var user=data.user
-    user.profile_pic = 'https://i.stack.imgur.com/l60Hf.png'
-    if(user.fb_id){
-        user.profile_pic = `https://graph.facebook.com/v9.0/${user.fb_id}/picture?type=large`
-        console.log(profile_pic)
-    }
+    // var user=data.user
+    // user.profile_pic = 'https://i.stack.imgur.com/l60Hf.png'
+    // if(user.fb_id){
+    //     user.profile_pic = `https://graph.facebook.com/v9.0/${user.fb_id}/picture?type=large`
+    //     console.log(profile_pic)
+    // }
+    // console.log(user)
     // setRefreshing(false)
     // console.log(data.userQuestions)
     return (
         // <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}>
         <>   
         {/* <Header drawer_navigation={drawer_navigation}/> */}
+            <StackHeader title='Profile'/>
             <FlatList
                 style={{width:'100%',backgroundColor:'white'}}
-                // ListHeaderComponent={()=><ProfileHeader user={user}/>}
+                ListHeaderComponent={()=><ProfileHeader user={data.user}/>}
+                ListFooterComponent={()=><ActivityIndicator style={{marginVertical:15}} size="large" animating={fetchingMore} color="#0000ff"/>}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}
-                data={(data.user.questions)}            
-                renderItem={({item})=><Question {...item}  />}
-                // keyExtractor={()=>uuid()}
+                data={(data.user.questions.map(q=>({...q,...{...data.user,questions:[]}})))}              
+                renderItem={(e)=><Question {...e.item} key={e.index.toString()} />}
+                onEndReachedThreshold={0.9}
+                onEndReached={()=>loadMore(fetchMore)}
+                // keyExtractor={(it)=>uuid()}
                 />
+                {/* <ActivityIndicator size="large" color="#0000ff"/> */}
         </>
         // </ScrollView>
     )

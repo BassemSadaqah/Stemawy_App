@@ -4,7 +4,7 @@ import StackHeader from '../components/StackHeader'
 function Settings({navigation}) {
     return (
         <View>
-            <StackHeader navigation={navigation}/>
+            <StackHeader navigation={navigation} title='Settings'/>
             <Text>
                 Settings
             </Text>

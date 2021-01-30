@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import {View,Text,Image,FlatList,RefreshControl,StyleSheet} from 'react-native'
+import {View,Text,Image,FlatList,RefreshControl,StyleSheet, Touchable, TouchableOpacity} from 'react-native'
 import Loading from '../components/Loading'
 import Header from '../components/Header'
 import {gql,useQuery} from '@apollo/client'
@@ -23,12 +23,12 @@ const styles=StyleSheet.create({
         backgroundColor: 'white',
         // backgroundColor: '#f8f8f8',
         // backgroundColor: '#ffcc00',
-        // justifyContent:'space-between',
+        // justifyContent:'space-between',  
         alignItems:'center',
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
-            height: 3,
+            height: 0,
         },
         shadowOpacity: 0.2,
         shadowRadius: 2,
@@ -78,6 +78,7 @@ const styles=StyleSheet.create({
 const Board=(props)=>{
         let background='white'
         const [profilePic,setProfilePic]=useState(props.item.profile_pic)
+        console.log(props)
         if(props.index==0){
             // background = '#ffcc00'
             background = '#fee101'
@@ -92,19 +93,22 @@ const Board=(props)=>{
             // background = '#cd7f32'
         }
         return(
-        <View style ={styles.board} backgroundColor = {background}>
-            <View style={styles.img_container}>
-                <Text style={styles.rank}>{props.index+1}</Text>
-                <Image style={styles.img} onError={()=>setProfilePic('https://i.stack.imgur.com/l60Hf.png')} source={{uri:profilePic}}/>   
+        <TouchableOpacity onPress={()=>props.navigation.navigate('Profile',{id:props.item.id})} activeOpacity={0.9}>
+            <View style ={styles.board} backgroundColor = {background}>
+                <View style={styles.img_container}>
+                    <Text style={styles.rank}>{props.index+1}</Text>
+                    <Image style={styles.img} onError={()=>setProfilePic('https://i.stack.imgur.com/l60Hf.png')} source={{uri:profilePic}}/>   
+                </View>
+                <Text style={styles.name}>{props.item.first_name} {props.item.last_name}</Text>
+                <Text style={styles.points}>{props.item.points}</Text>
             </View>
-            <Text style={styles.name}>{props.item.first_name} {props.item.last_name}</Text>
-            <Text style={styles.points}>{props.item.points}</Text>
-        </View>
+        </TouchableOpacity>
         )}        
     
 const LeaderBoardQuery=gql`
 query leaderboard($count: Int) {
     leaderboard(count:$count){
+        id
         first_name
         last_name
         email
@@ -130,7 +134,7 @@ function Leaderboard(props) {
             <FlatList
                 style={{paddingTop:15}}
                 data={data.leaderboard}
-                renderItem={(item)=><Board {...item}/>}
+                renderItem={(item)=><Board {...item} navigation={props.navigation}/>}
                 refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch}/>}
                 keyExtractor={()=>uuid()}
 

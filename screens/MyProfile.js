@@ -98,6 +98,10 @@ const styles=StyleSheet.create({
 const GET_USER_QUESTIONS = gql `
 query user_questions($id:Int!){
     user(id:$id){
+        id
+        first_name
+        last_name
+        profile_pic
         questions{
             id
             question
@@ -169,7 +173,7 @@ function MyProfile(props) {
                 style={{width:'100%',backgroundColor:'white'}}
                 ListHeaderComponent={ProfileHeader}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}
-                data={(data.user.questions)}            
+                data={(data.user.questions.map(q=>({...q,...{...data.user,questions:[]}})))}            
                 renderItem={({item})=><Question {...item}  />}
                 keyExtractor={()=>uuid()}
                 />
