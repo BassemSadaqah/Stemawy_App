@@ -65,7 +65,7 @@ export default React.memo(function Question(props) {
     const [aspectRatio, setAspectRatio] = useState(1000)
     
     useEffect(() => {
-        console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqstion ' + props.id)
+        // console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqstion ' + props.id)
         if (!loading) {
             if(data.question.img){
             Image.getSize(gql_question.img, (srcWidth, srcHeight) => {
@@ -141,6 +141,7 @@ export default React.memo(function Question(props) {
         )
     }
     if(loading) return <></>
+    if(!data.question) return <></>
     // if(loading) return <Loading/>
     let gql_question=data.question
      

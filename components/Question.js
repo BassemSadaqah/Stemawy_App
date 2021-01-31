@@ -32,7 +32,7 @@ function since_when(previous) {
         return Math.round(elapsed / msPerYear) + ' years ago';
     }
 }
-export default function Question(props) {
+export default React.memo(function Question(props) {
     // console.log(props)
     const {user}=useContext(userContext)
     // const user=props.user
@@ -143,6 +143,6 @@ export default function Question(props) {
 
         </View >
     );
-}
+})
 
 

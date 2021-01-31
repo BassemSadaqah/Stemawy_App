@@ -8,6 +8,7 @@
 console.warn=()=>{}
 import React,{useState,useEffect,createContext} from 'react';
 import {SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar,ToastAndroid} from 'react-native';
+import Splash from './screens/Splash';
 import Intro from './screens/Intro';
 import Signin from './screens/Signin'
 import Signup from './screens/Signup'
@@ -40,6 +41,7 @@ const defaultClientOptions = {
 }
 
 function App() {
+  // return <Splash/>
   const [isLoading, setisLoading] = useState(true)
   const [Err, setErr] = useState(false)
   const [user, setUser] = useState({ isSigned: null }) //set id:null to be signed out
@@ -93,7 +95,7 @@ function App() {
     async function getUser(){
       try{
         const accessToken= await AsyncStorage.getItem('accessToken')  
-        console.log(accessToken)
+        // console.log(accessToken)
         if(accessToken){
             try{
               const {data}=await axios.get('https://stemawy-app.herokuapp.com/user',{headers:{authorization:accessToken}})
@@ -102,7 +104,7 @@ function App() {
               }else{
                 setUser({isSigned:false})
               }
-              console.log(data)
+              // console.log(data)
             }catch{
               setErr(true)
               setUser({isSigned:false})
@@ -119,7 +121,7 @@ function App() {
     
 
   if (user.isSigned==null) {
-    return <Loading />
+    return <Splash />
   }
   return (
   <ApolloProvider client={client}>
@@ -128,7 +130,7 @@ function App() {
       <NavigationContainer >
         {(!user.isSigned) ?
           <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-            <AuthStack.Screen name="Intro" component={Intro} />
+            {/* <AuthStack.Screen name="Intro" component={Intro} /> */}
             <AuthStack.Screen name="Signin" component={Signin} initialParams={{ user, setUser }} />
             <AuthStack.Screen name="Signup" component={Signup} initialParams={{ user, setUser }} />
           </AuthStack.Navigator> :

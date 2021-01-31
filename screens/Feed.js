@@ -20,7 +20,7 @@ function Feed(props) {
     const [refreshing, setRefreshing] = useState(false);
     const [ids, setIds] = useState([Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300)]);
     const {user} = useContext(userContext)
-    console.log(user)
+    // console.log(user)
     useEffect(()=>{
         //   setTimeout(() => {
         //       setIds([100, 200])

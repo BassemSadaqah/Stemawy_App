@@ -59,7 +59,7 @@ function Upload(props) {
                 setChoices(['',''])
                 setStep(1)
                 setQuestionImg('')
-                props.navigation.navigate('Feed')
+                props.navigation.navigate('Home')
             }else{
                 ToastAndroid.show((err_msg?err_msg:'Something Went Wrong'), ToastAndroid.SHORT)
                 setUploading(false)

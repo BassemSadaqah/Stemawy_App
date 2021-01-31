@@ -120,7 +120,7 @@ function MyProfile(props) {
     const [questions,setQuestions]=useState([])
     const [err, setErr] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
-    const drawer_navigation = props.route.params.drawer_navigation
+    // const drawer_navigation = props.route.params.drawer_navigation
     var profile_pic = 'https://i.stack.imgur.com/l60Hf.png'
     if(user.fb_id){
         var profile_pic = `https://graph.facebook.com/v9.0/${user.fb_id}/picture?type=large`
@@ -168,7 +168,7 @@ function MyProfile(props) {
     return (
         // <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}>
         <>   
-        <Header drawer_navigation={drawer_navigation}/>
+        {/* <Header drawer_navigation={drawer_navigation}/> */}
             <FlatList
                 style={{width:'100%',backgroundColor:'white'}}
                 ListHeaderComponent={ProfileHeader}

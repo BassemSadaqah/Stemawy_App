@@ -50,9 +50,10 @@ function Header(props) {
     const navigation = useNavigation();
     // console.log(navigation)
     const {user} = useContext(userContext)
+    if(props.showHeader==false) return <></> 
     return (
         <View style={styles.header}>
-            <TouchableOpacity onPress={()=>navigation.navigate('Home')} >
+            <TouchableOpacity onPress={()=>navigation.goBack()} >
                 <Icon name="arrowleft" style={styles.back} color={'black'} size={25} />
             </TouchableOpacity>
             <Text style={styles.txt}>{props.title}</Text>

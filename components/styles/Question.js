@@ -2,10 +2,11 @@ import {StyleSheet} from 'react-native';
 const styles = StyleSheet.create({
     Question: {
         display: 'flex',
+        backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        borderWidth: 1,
+        borderBottomWidth: 1.5,
         borderColor: 'grey',
     },
     btn: {

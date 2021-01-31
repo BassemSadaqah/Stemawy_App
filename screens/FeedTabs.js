@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
 import Feed from './Feed'
 import Upload from './Ask/Upload'
 import MyProfile from './MyProfile'
+import Profile from './Profile'
 import Leaderboard from './Leaderboard'
 import Burger from './Burger'
+import {userContext} from '../App'
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -14,6 +16,7 @@ const Tab = createMaterialTopTabNavigator();
 // const Tab = createMaterialBottomTabNavigator();
 
 export default function FeedTabs({navigation}) {
+  const {user}=useContext(userContext)
   return (
     <Tab.Navigator
       // tabBarPosition = 'bottom'
@@ -66,10 +69,12 @@ export default function FeedTabs({navigation}) {
       />
       <Tab.Screen
         name="MyProfile"
-        component={MyProfile}
-        initialParams={{drawer_navigation:navigation}}
+        // component={MyProfile}
+        component={Profile}
+        initialParams={{id:user.id,showHeader:false}}
         options={{
           tabBarLabel: 'Profile',
+          tabBarBadge:3,
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="account" color={color} size={26} />
           ),

@@ -103,6 +103,7 @@ query user_questions($id:Int!,$offset:Int){
         last_name
         profile_pic
         points
+        rank
         questions(limit:5,offset:$offset){
             id
             question
@@ -129,7 +130,7 @@ query user_questions($id:Int!,$offset:Int){
 
 
 function Profile(props) {
-    const user_id = props.route.params.id
+    const user_id =props.route.params.id
     console.log(user_id)
     // const [loading,setLoading]=useState(true)
     const { loading, error, data,refetch,fetchMore } = useQuery(GET_USER_QUESTIONS,{variables:{id:user_id,offset:0}});
@@ -179,7 +180,7 @@ function Profile(props) {
                     <Text style={styles.followers_text}>Points</Text>
                 </View>
                 <View style={styles.followers}>
-                    <Text style={styles.followers_count}>21</Text>
+                    <Text style={styles.followers_count}>{user.rank}</Text>
                     <Text style={styles.followers_text}>Rank</Text>
                 </View>
             </View>
@@ -196,9 +197,9 @@ function Profile(props) {
     )
 
 
-
+    console.log(err)
     if(err || error) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
-    if(loading || refreshing) return <><Header/><Loading/></>
+    if(loading || refreshing) return <><StackHeader title='Profile'/><Loading/></>
     console.log(data)
     // var user=data.user
     // user.profile_pic = 'https://i.stack.imgur.com/l60Hf.png'
@@ -213,14 +214,14 @@ function Profile(props) {
         // <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}>
         <>   
         {/* <Header drawer_navigation={drawer_navigation}/> */}
-            <StackHeader title='Profile'/>
+            <StackHeader showHeader={props.route.params.showHeader} title='Profile'/>
             <FlatList
                 style={{width:'100%',backgroundColor:'white'}}
                 ListHeaderComponent={()=><ProfileHeader user={data.user}/>}
                 ListFooterComponent={()=><ActivityIndicator style={{marginVertical:15}} size="large" animating={fetchingMore} color="#0000ff"/>}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}
                 data={(data.user.questions.map(q=>({...q,...{...data.user,questions:[]}})))}              
-                renderItem={(e)=><Question {...e.item} key={e.index.toString()} />}
+                renderItem={(e)=><Question {...e.item} key={e.item.id.toString()} />}
                 onEndReachedThreshold={0.9}
                 onEndReached={()=>loadMore(fetchMore)}
                 // keyExtractor={(it)=>uuid()}

@@ -112,8 +112,9 @@ async function pickFile(setQuestionImg) {
     }
 }
 function Step1(props) {
-    var disabled=props.question.length<2
     const {question_img,setQuestionImg}=props
+    var disabled=props.question.length<2
+    // var disabled=props.question.length<2 && !question_img
     return (
         <View style={styles.step_1}>
                 <ScrollView style={styles.question_input_view}>
