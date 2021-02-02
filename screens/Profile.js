@@ -11,90 +11,11 @@ import Err from '../components/Err'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {userContext} from '../App'
 import { gql, useQuery } from '@apollo/client'
+import { useTheme } from '@react-navigation/native';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 
 
-const styles=StyleSheet.create({
-    container:{
-        display:'flex',
-        alignItems:'center',
-        backgroundColor:'white',
-        flex:1
-    },
-    profile_img:{
-        aspectRatio:1,
-        borderRadius:200,
-        width:'50%',
-        marginTop:35,
-    },
-    profile_name:{
-        fontSize:30,
-        fontWeight:'700',
-        marginTop:25,
-        paddingHorizontal:15,
-        textAlign:'center'
-    },
-    bio:{
-        color:'gray',
-        fontSize:17,
-        marginTop:5
-    },
-    data_container:{
-        width:'100%',
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'space-between',
-        paddingVertical:7,
-        paddingHorizontal:10,
-        marginTop:10,
-        borderColor:'gray',
-        borderBottomWidth: 0.5,
-        borderTopWidth: 0.5,
-    },
-    followers:{
-        display:'flex',
-        alignItems:'center',
-        flex:1,
-        // borderColor:'black',
-        // borderWidth:1,
-    },
-    followers_text:{
-        fontSize:17,
-        color:'gray'
-    },
-    followers_count:{
-        fontSize: 17
-    },
-    tabs:{
-        width:'100%',
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'space-between',
-        paddingVertical:7,
-        paddingHorizontal: 25,  //57for three icons
-         borderColor:'gray',
-        //  borderTopWidth: 1,
-    },
-    tabs_text:{
-        fontSize:17,
-        color:'black'  
-    },
-    upload:{
-     width:'100%',
-     display:'flex',
-     justifyContent:'center',
-     paddingHorizontal:10,
-     height:60,
-    //  borderColor:'rgba(0,0,0,0.1)',
-    //  borderBottomWidth: 15,
-    },
-    upload_text:{
-        color:'gray',
-        fontSize:20,
-        fontWeight:'600',
-    }
-})
 
 const GET_USER_QUESTIONS = gql `
 query user_questions($id:Int!,$offset:Int){
@@ -141,6 +62,89 @@ function Profile(props) {
     const [offset, setOffset] = useState(5);
     const [fetchingMore, setFetchingMore] = useState(false);
     const [finished, setFinished] = useState(false);
+    const {colors}=useTheme()
+    const styles = StyleSheet.create({
+        container: {
+            display: 'flex',
+            alignItems: 'center',
+            flex: 1
+        },
+        profile_img: {
+            aspectRatio: 1,
+            borderRadius: 200,
+            width: '50%',
+            marginTop: 35,
+        },
+        profile_name: {
+            fontSize: 30,
+            fontWeight: '700',
+            marginTop: 25,
+            paddingHorizontal: 15,
+            textAlign: 'center',
+            color:colors.text,
+        },
+        bio: {
+            color: 'gray',
+            fontSize: 17,
+            marginTop: 5
+        },
+        data_container: {
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingVertical: 7,
+            paddingHorizontal: 10,
+            marginTop: 10,
+            borderColor: 'gray',
+            borderBottomWidth: 0.5,
+            borderTopWidth: 0.5,
+        },
+        followers: {
+            display: 'flex',
+            alignItems: 'center',
+            flex: 1,
+            // borderColor:'black',
+            // borderWidth:1,
+        },
+        followers_text: {
+            fontSize: 17,
+            color: 'gray'
+        },
+        followers_count: {
+            fontSize: 17,
+            color:colors.text,
+        },
+        tabs: {
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingVertical: 7,
+            paddingHorizontal: 25,  //57for three icons
+            borderColor: 'gray',
+            //  borderTopWidth: 1,
+        },
+        tabs_text: {
+            fontSize: 17,
+            color: colors.text,
+        },
+        upload: {
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            paddingHorizontal: 10,
+            height: 60,
+            //  borderColor:'rgba(0,0,0,0.1)',
+            //  borderBottomWidth: 15,
+        },
+        upload_text: {
+            color: 'gray',
+            fontSize: 20,
+            fontWeight: '600',
+        }
+    })
+
     const updateQuery=(previousResult, { fetchMoreResult })=>{
          if (!fetchMoreResult) {
             setFetchingMore(false)
@@ -217,7 +221,7 @@ function Profile(props) {
         {/* <Header drawer_navigation={drawer_navigation}/> */}
             <StackHeader showHeader={props.route.params.showHeader} title='Profile'/>
             <FlatList
-                style={{width:'100%',backgroundColor:'white'}}
+                style={{width:'100%'}}
                 ListHeaderComponent={()=><ProfileHeader user={data.user}/>}
                 ListFooterComponent={()=><ActivityIndicator style={{marginVertical:15}} size="large" animating={fetchingMore} color="#0000ff"/>}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}

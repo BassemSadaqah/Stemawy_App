@@ -6,21 +6,8 @@ import Loading from '../components/Loading'
 import StackHeader from '../components/StackHeader'
 import {userContext} from '../App'
 import { gql, useQuery,useMutation } from '@apollo/client'
-const styles=StyleSheet.create({
-    main:{
-        backgroundColor:'white',
-        flex:1,
-        paddingTop:10
-    },
-    input_container:{
-        margin:5
-    },
-    txt:{
-        paddingLeft: 8,
-        paddingBottom:3,
-        fontWeight:'700'
-    }
-})
+import {useTheme} from '@react-navigation/native'
+
 const USER_DATA = gql `
 query user_data{
     user{
@@ -40,16 +27,38 @@ const UPDATE_USER_DATA = gql`
     }
 }`;
 
-function InputView(props){
-    return(
-    <View style={styles.input_container}>
-        <Text style={styles.txt}>{props.title}</Text>
-        <Input placeholder={props.title} value={props.value} onChangeText={props.onChangeText}/>
-    </View>)
-}
+
 function Settings({navigation}) {
     const {user,setUser} = useContext(userContext)
+    const {colors,dark}=useTheme()
     const { loading, error, data,refetch } = useQuery(USER_DATA,{fetchPolicy:'no-cache'});
+
+    const styles = StyleSheet.create({
+        main: {
+            flex: 1,
+            paddingTop: 10
+        },
+        input_container: {
+            margin: 5,
+        },
+        input: {
+            backgroundColor:colors.card,
+            color:colors.text,
+        },
+        txt: {
+            color:colors.text,
+            paddingLeft: 8,
+            paddingBottom: 3,
+            fontWeight: '700'
+        }
+    })
+    function InputView(props) {
+        return (
+            <View style={styles.input_container}>
+                <Text style={styles.txt}>{props.title}</Text>
+                <Input style={styles.input} placeholder={props.title} placeholderTextColor={dark?'#a1a1a1':grey} value={props.value} onChangeText={props.onChangeText} />
+            </View>)
+    }
     const submitForm=()=>{
         setSaving(true)
         editUser({variables:formData}).then(({data})=>{

@@ -16,6 +16,7 @@ import FeedTabs from './screens/FeedTabs'
 import Profile from './screens/Profile'
 import Settings from './screens/Settings'
 import Loading from './components/Loading';
+import Navigation from './components/Navigation'
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -29,9 +30,7 @@ import { onError } from "@apollo/client/link/error";
 // import { acc } from 'react-native-reanimated';
 
 
-const AuthStack = createStackNavigator();
-const FeedStack = createStackNavigator();
-const FeedDrawer = createDrawerNavigator();
+
 export const userContext = createContext({ name: 'Bassem Sadaqah' })
 
 const defaultClientOptions = {
@@ -48,7 +47,7 @@ function App() {
 
   
   const httpLink = createHttpLink({
-      uri: 'http://192.168.1.7:5000/graphql',
+      uri: 'https://stemawy-app.herokuapp.com/graphql',
   });
   const authLink = setContext(async(_, { headers }) => {
     const token = await AsyncStorage.getItem('accessToken');
@@ -98,7 +97,7 @@ function App() {
         // console.log(accessToken)
         if(accessToken){
             try{
-              const {data}=await axios.get('http://192.168.1.7:5000/user',{headers:{authorization:accessToken}})
+              const {data}=await axios.get('https://stemawy-app.herokuapp.com/user',{headers:{authorization:accessToken}})
               if(data.success){
                 setUser({isSigned:true,...data.user})
               }else{
@@ -127,25 +126,7 @@ function App() {
   <ApolloProvider client={client}>
     <userContext.Provider value={{user,setUser}}>
       {/* <StatusBar style="dark" hidden={true} /> */}
-      <NavigationContainer >
-        {(!user.isSigned) ?
-          <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-            {/* <AuthStack.Screen name="Intro" component={Intro} /> */}
-            <AuthStack.Screen name="Signin" component={Signin} initialParams={{ user, setUser }} />
-            <AuthStack.Screen name="Signup" component={Signup} initialParams={{ user, setUser }} />
-          </AuthStack.Navigator> :
-          <FeedStack.Navigator screenOptions={{ headerShown: false }}>
-            <FeedStack.Screen name="Feed" component={FeedTabs} />
-            <FeedStack.Screen name="Settings" component={Settings} />
-            <FeedStack.Screen name="Profile" component={Profile} />
-          </FeedStack.Navigator> 
-          // <FeedDrawer.Navigator initialRouteName="Home">
-          //   <FeedDrawer.Screen name="Home" component={FeedTabs} />
-          //   <FeedDrawer.Screen name="Settings" component={Settings} />
-          //   <FeedDrawer.Screen name="Logout" component={Logout} initialParams={{ user, setUser }} />
-          // </FeedDrawer.Navigator>
-        }
-      </NavigationContainer>
+      <Navigation/>
     </userContext.Provider>
   </ApolloProvider>
 

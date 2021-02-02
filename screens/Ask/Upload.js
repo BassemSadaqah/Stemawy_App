@@ -9,13 +9,9 @@ import Step1 from './Step1'
 import Step2 from './Step2'
 import Step3 from './Step3'
 import { gql, useMutation } from '@apollo/client'
+import { useTheme } from '@react-navigation/native'
 
 
-const styles = StyleSheet.create({
-    main:{
-        backgroundColor:'white',
-        flex:1
-    }})
 
 const ADD_QUESTION = gql`
   mutation AddQuestion($question: String!,$img:String,$choices:[String]!,$answer:Int!) {
@@ -39,7 +35,13 @@ function Upload(props) {
     const [choices,setChoices]=useState(['',''])
     const [answer, setAnswer] = useState(0)
     const drawer_navigation = props.route.params.drawer_navigation
-
+    const {colors}=useTheme()
+    const styles = StyleSheet.create({
+        main: {
+            backgroundColor: colors.card,
+            flex: 1
+        }
+    })
     const submitForm=async ()=>{
         setUploading(true)
         const img_bas64 = (question_img? ('data:image/jpeg;base64,'+await RNFS.readFile(question_img.uri, 'base64')):'')

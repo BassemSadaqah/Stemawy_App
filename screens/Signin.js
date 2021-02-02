@@ -14,7 +14,7 @@ const submitForm=(form_data,setUser)=>{
     // setUser({id:1,email:'ee'})
     const {email,password}=form_data
     if(!email || !password) return ToastAndroid.show('Please Enter Valid Data', ToastAndroid.SHORT);
-     axios.post('http://192.168.1.7:5000/login',form_data)
+     axios.post('https://stemawy-app.herokuapp.com/login',form_data)
     .then(({data})=>{
         if(data.success && data.accessToken &&data.user){
             console.log(data)
@@ -47,7 +47,7 @@ const fbSignin=async (setUser,setLoading)=>{
   }
   // Create a Firebase credential with the AccessToken
   console.log(data.accessToken)
-   axios.post('http://192.168.1.7:5000/fb-login',{access_token:data.accessToken})
+   axios.post('https://stemawy-app.herokuapp.com/fb-login',{access_token:data.accessToken})
     .then(({data})=>{
         console.log(data)
         if(data.success && data.accessToken &&data.user){

@@ -21,8 +21,8 @@ export default function FeedTabs({navigation}) {
     <Tab.Navigator
       // tabBarPosition = 'bottom'
       initialRouteName="Feed"
-      activeColor="#fff"
-      barStyle={{ backgroundColor: 'red' }} 
+      // activeColor="#fff"
+      // barStyle={{ backgroundColor: 'red' }} 
       tabBarOptions={{
           showIcon: true,
           showLabel:false,

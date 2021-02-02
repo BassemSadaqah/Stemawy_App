@@ -6,6 +6,7 @@ import Err from '../components/Err'
 import Header from '../components/Header'
 import {userContext} from '../App'
 import { gql, useQuery } from '@apollo/client'
+import {useTheme} from '@react-navigation/native'
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 
@@ -28,6 +29,7 @@ query FeedQuestions($limit:Int){
     }
 }`
 function Feed(props) {
+    const {colors}=useTheme()
     const { loading, error, data,refetch,fetchMore } = useQuery(GET_FEED_QUESTIONS);
     const [refreshing, setRefreshing] = useState(false);
     const [fetchingMore, setFetchingMore] = useState(false);
@@ -48,14 +50,15 @@ function Feed(props) {
 
     if(error) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
     if(loading || refreshing) return <Loading/>
+    const renderItem = (e)=>(<Question {...e.item} navigation={props.navigation} isFeed={true} />)
     return(
         <FlatList
-            style={{ width: '100%', backgroundColor: 'white' }}
+            style={{ width: '100%', backgroundColor: colors.background }}
             // ListHeaderComponent={() => <ProfileHeader user={data.user} />}
             ListFooterComponent={() => <ActivityIndicator style={{ marginVertical: 15 }} size="large" animating={fetchingMore} color="#0000ff" />}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { refetch() }} />}
             data={(data.feedQuestions.map(q => ({ ...q,...q.user })))}
-            renderItem={(e) =>{ return(<Question {...e.item}  navigation={props.navigation} isFeed={true}/>)}}
+            renderItem={renderItem}
             listKey="Feed"
             keyExtractor={(item, index) => index.toString()}
             onEndReachedThreshold={0.85}

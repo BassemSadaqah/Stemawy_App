@@ -1,12 +1,13 @@
 import React,{useState,useContext,useEffect} from 'react';
 import { StyleSheet, Text, View,Image, Modal,ToastAndroid ,FlatList, TouchableOpacity} from 'react-native';
 // import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
-import s from './styles/Question'
+// import s from './styles/Question'
 import Button from './Button'
 import {userContext} from '../App'
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import {useTheme} from '@react-navigation/native'
 
 function since_when(previous) {
     var current = Date.parse(new Date().toUTCString()); //-7200000
@@ -33,15 +34,80 @@ function since_when(previous) {
     }
 }
 export default React.memo(function Question(props) {
-    // console.log('Questionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn'+props.id)
     const {user}=useContext(userContext)
-    // const user=props.user
-    // const question=props.user.quesion
     const [clicked, setClicked] = useState(null)
     const [answered, setAnswered] = useState(false)
     const [modalVisibility, setModalVisibility] = useState(false)
     const [aspectRatio, setAspectRatio] = useState(1000)
-    
+    const {colors}=useTheme()
+    const s = StyleSheet.create({
+        Question: {
+            display: 'flex',
+            backgroundColor: colors.background,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            borderBottomWidth: 1.5,
+            borderColor: 'grey',
+        },
+        btn: {
+            borderRadius: 20,
+            width: '95%',
+            height: 40,
+            backgroundColor: colors.card,
+            borderWidth: 1,
+            borderColor: 'grey',
+            margin: 5,
+            display: 'flex',
+            justifyContent: 'center',
+            padding: 10,
+
+        },
+        btn_txt:{
+            color: colors.text,
+        },
+        question_text: {
+            alignSelf: 'flex-start',
+            fontSize: 17,
+            marginTop: 10,
+            marginBottom: 15,
+            marginHorizontal: 10,
+            color:colors.text,
+        },
+        question_img: {
+            width: '100%',
+            // minHeight:100,
+            // height:200,
+            marginBottom: 10,
+            // flex:1,
+            aspectRatio: 3 / 2,
+            // aspectRatio: 1
+            // resizeMode:'repeat'
+        },
+        profile_view: {
+            padding: 10,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-start'
+        },
+        profile_img: {
+            width: 45,
+            borderRadius: 10000,
+            aspectRatio: 1,
+            marginRight: 10,
+        },
+        username: {
+            color: '#385898',
+            fontWeight: '700',
+        },
+        since: {
+            color: '#616770'
+        },
+        clicked: {
+            backgroundColor: '#a3a0a0'
+        }
+    });
     //  props = {
     //     name: user.displayName,
     //     first_name: 'Fady',
@@ -113,7 +179,7 @@ export default React.memo(function Question(props) {
         }
         return (
             <TouchableOpacity disabled={answered}  onPress={()=>{setClicked(props.index)}} style={btn_style()}>
-                <Text>{props.ans}</Text>
+                <Text style={s.btn_txt}>{props.ans}</Text>
             </TouchableOpacity>
         )
     }
