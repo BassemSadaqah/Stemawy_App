@@ -56,7 +56,7 @@ function Settings({navigation}) {
         return (
             <View style={styles.input_container}>
                 <Text style={styles.txt}>{props.title}</Text>
-                <Input style={styles.input} placeholder={props.title} placeholderTextColor={dark?'#a1a1a1':grey} value={props.value} onChangeText={props.onChangeText} />
+                <Input style={styles.input} placeholder={props.title} placeholderTextColor={dark?'#a1a1a1':'gray'} value={props.value} onChangeText={props.onChangeText} />
             </View>)
     }
     const submitForm=()=>{

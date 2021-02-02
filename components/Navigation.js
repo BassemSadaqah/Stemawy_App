@@ -53,7 +53,7 @@ export default function Navigation() {
 
 
     return (
-        <ThemeContext.Provider value={{isThemeDark,toggleTheme:setIsThemeDark}}>
+        <ThemeContext.Provider value={preferences}>
             <NavigationContainer theme={AppTheme}>
                 {(!user.isSigned) ?
                     <AuthStack.Navigator screenOptions={{ headerShown: false }}>
