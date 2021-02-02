@@ -20,6 +20,7 @@ function Feed(props) {
     const [refreshing, setRefreshing] = useState(false);
     const [ids, setIds] = useState([Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300),Math.floor(Math.random()*300)]);
     const {user} = useContext(userContext)
+    
     // console.log(user)
     useEffect(()=>{
         //   setTimeout(() => {
@@ -60,7 +61,6 @@ function Feed(props) {
     }
     const loadMore=(e)=>{
         console.log('11111111111111111')
-        console.log(e)
         setIds((i)=>{
             let z=i;
             // z.push(100,200,300  );

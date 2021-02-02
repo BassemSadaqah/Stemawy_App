@@ -48,7 +48,7 @@ function App() {
 
   
   const httpLink = createHttpLink({
-      uri: 'https://stemawy-app.herokuapp.com/graphql',
+      uri: 'http://192.168.1.7:5000/graphql',
   });
   const authLink = setContext(async(_, { headers }) => {
     const token = await AsyncStorage.getItem('accessToken');
@@ -98,7 +98,7 @@ function App() {
         // console.log(accessToken)
         if(accessToken){
             try{
-              const {data}=await axios.get('https://stemawy-app.herokuapp.com/user',{headers:{authorization:accessToken}})
+              const {data}=await axios.get('http://192.168.1.7:5000/user',{headers:{authorization:accessToken}})
               if(data.success){
                 setUser({isSigned:true,...data.user})
               }else{

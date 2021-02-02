@@ -101,6 +101,7 @@ query user_questions($id:Int!,$offset:Int){
     user(id:$id){
         first_name
         last_name
+        bio
         profile_pic
         points
         rank
@@ -169,7 +170,7 @@ function Profile(props) {
         <View style={styles.container}>
             <Image style={styles.profile_img} source={{uri:user.profile_pic+'?type=large'}}/>
             <Text style={styles.profile_name}>{user.first_name} {user.last_name}</Text>
-            <Text style={styles.bio}>Born to Die</Text>
+            <Text style={styles.bio}>{user.bio}</Text>
             <View style={styles.data_container}>
                 <View style={styles.followers}>
                     <Text style={styles.followers_count}>50</Text>
@@ -199,7 +200,7 @@ function Profile(props) {
 
     console.log(err)
     if(err || error) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
-    if(loading || refreshing) return <><StackHeader title='Profile'/><Loading/></>
+    if(loading || refreshing) return <><StackHeader showHeader={props.route.params.showHeader} title='Profile'/><Loading/></>
     console.log(data)
     // var user=data.user
     // user.profile_pic = 'https://i.stack.imgur.com/l60Hf.png'
@@ -221,9 +222,10 @@ function Profile(props) {
                 ListFooterComponent={()=><ActivityIndicator style={{marginVertical:15}} size="large" animating={fetchingMore} color="#0000ff"/>}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={()=>{refetch()}} />}
                 data={(data.user.questions.map(q=>({...q,...{...data.user,questions:[]}})))}              
-                renderItem={(e)=><Question {...e.item} key={e.item.id.toString()} />}
+                renderItem={(e)=><Question {...e.item} />}
                 onEndReachedThreshold={0.9}
                 onEndReached={()=>loadMore(fetchMore)}
+                keyExtractor={(item) => item.id.toString()}
                 // keyExtractor={(it)=>uuid()}
                 />
                 {/* <ActivityIndicator size="large" color="#0000ff"/> */}

@@ -66,7 +66,7 @@ export default React.memo(function Question(props) {
     
     useEffect(() => {
         // console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqstion ' + props.id)
-        if (!loading) {
+        if (!loading && data.question) {
             if(data.question.img){
             Image.getSize(gql_question.img, (srcWidth, srcHeight) => {
                 setAspectRatio(srcWidth / srcHeight)

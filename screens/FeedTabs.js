@@ -1,5 +1,5 @@
 import React, { useState,useContext } from 'react'
-import Feed from './Feed'
+import Feed from './Feed2'
 import Upload from './Ask/Upload'
 import MyProfile from './MyProfile'
 import Profile from './Profile'

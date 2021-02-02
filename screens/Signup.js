@@ -11,7 +11,7 @@ const submitForm=(setUser,form_data)=>{
     const {first_name,last_name,email,password,confirm_password}=form_data
     if(password!=confirm_password) return ToastAndroid.show('Passwords didn\'t match', ToastAndroid.SHORT);
     if(!(first_name&&last_name&&email&&password&&confirm_password)) return ToastAndroid.show('Please Enter Valid Data', ToastAndroid.SHORT);
-    axios.post('https://stemawy-app.herokuapp.com/register',form_data)
+    axios.post('http://192.168.1.7:5000/register',form_data)
     .then(({data})=>{
         if(data.success && data.accessToken){
             AsyncStorage.setItem('accessToken', data.accessToken).then(()=>{
