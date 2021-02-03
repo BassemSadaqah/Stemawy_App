@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react'
+import React, { useState,useContext,createContext } from 'react'
 import Feed from './Feed2'
 import Upload from './Ask/Upload'
 import MyProfile from './MyProfile'
@@ -12,12 +12,16 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { NavigationContainer } from '@react-navigation/native';
 
+export const PointsContext = createContext(0)
+
 const Tab = createMaterialTopTabNavigator();
 // const Tab = createMaterialBottomTabNavigator();
-
 export default function FeedTabs({navigation}) {
   const {user}=useContext(userContext)
+  const [points,setPoints]=useState(0)
+  const providerValue = { points, setPoints }
   return (
+    <PointsContext.Provider value={providerValue}>
     <Tab.Navigator
       // tabBarPosition = 'bottom'
       initialRouteName="Feed"
@@ -35,7 +39,7 @@ export default function FeedTabs({navigation}) {
       <Tab.Screen
         name="Home"
         component={Feed}
-        initialParams={{drawer_navigation:navigation}}
+        initialParams={{drawer_navigation:navigation,setPoints}}
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({ color }) => (
@@ -92,5 +96,6 @@ export default function FeedTabs({navigation}) {
         }}
       />
     </Tab.Navigator>
+  </PointsContext.Provider> 
   );
 }

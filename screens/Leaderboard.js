@@ -54,6 +54,7 @@ query leaderboard($count: Int) {
 }
 `
 function Leaderboard(props) {
+    console.log('LeaderBoard Component')
     const {colors,dark}=useTheme()
     const styles = StyleSheet.create({
         main: {

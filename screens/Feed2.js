@@ -29,11 +29,11 @@ query FeedQuestions($limit:Int){
     }
 }`
 function Feed(props) {
+    console.log('Feed2')
     const {colors}=useTheme()
     const { loading, error, data,refetch,fetchMore } = useQuery(GET_FEED_QUESTIONS);
     const [refreshing, setRefreshing] = useState(false);
     const [fetchingMore, setFetchingMore] = useState(false);
-
 
     const updateQuery = (previousResult, { fetchMoreResult }) => {
         setFetchingMore(false)
@@ -50,7 +50,8 @@ function Feed(props) {
 
     if(error) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
     if(loading || refreshing) return <Loading/>
-    const renderItem = (e)=>(<Question {...e.item} navigation={props.navigation} isFeed={true} />)
+    const renderItem = (e)=>(<Question {...e.item} navigation={props.navigation} isFeed={true} setPoints={props.route.params.setPoints}/>)
+    console.log('Feed2 22')
     return(
         <FlatList
             style={{ width: '100%', backgroundColor: colors.background }}

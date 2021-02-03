@@ -8,6 +8,7 @@ import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {useTheme} from '@react-navigation/native'
+import { PointsContext } from '../screens/FeedTabs'
 
 function since_when(previous) {
     var current = Date.parse(new Date().toUTCString()); //-7200000
@@ -40,6 +41,8 @@ export default React.memo(function Question(props) {
     const [modalVisibility, setModalVisibility] = useState(false)
     const [aspectRatio, setAspectRatio] = useState(1000)
     const {colors}=useTheme()
+    // const {setPoints} = useContext(PointsContext)
+    console.log('Question')
     const s = StyleSheet.create({
         Question: {
             display: 'flex',
@@ -162,6 +165,7 @@ export default React.memo(function Question(props) {
         const btn_style=()=>{
             if(answered){
                 if (props.index ==clicked && clicked+1==props.answer) {
+                    props.setPoints(p => p + 5)
                     return {...s.btn,backgroundColor: '#22d652'}
                 }
                 else if(props.index ==clicked && clicked+1!=props.answer) {

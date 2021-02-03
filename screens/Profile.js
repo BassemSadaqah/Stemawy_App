@@ -14,6 +14,7 @@ import { gql, useQuery } from '@apollo/client'
 import { useTheme } from '@react-navigation/native';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
+import { PointsContext } from './FeedTabs'
 
 
 
@@ -52,8 +53,9 @@ query user_questions($id:Int!,$offset:Int){
 
 
 function Profile(props) {
+    console.log('Profile')
     const user_id =props.route.params.id
-    console.log(user_id)
+    // console.log(user_id)
     // const [loading,setLoading]=useState(true)
     const { loading, error, data,refetch,fetchMore } = useQuery(GET_USER_QUESTIONS,{variables:{id:user_id,offset:0}});
     const [questions,setQuestions]=useState([])
@@ -63,6 +65,7 @@ function Profile(props) {
     const [fetchingMore, setFetchingMore] = useState(false);
     const [finished, setFinished] = useState(false);
     const {colors}=useTheme()
+    const {points,setPoints}=useContext(PointsContext)
     const styles = StyleSheet.create({
         container: {
             display: 'flex',
@@ -159,15 +162,12 @@ function Profile(props) {
          setOffset(offset+5)
          setFetchingMore(false)
          return {...previousResult,user:{...previousResult.user,questions:[...previousResult.user.questions,...fetchMoreResult.user.questions]}}
-         console.log(previousResult)
-         console.log(fetchMoreResult)
+
     }
     const loadMore = (fetchMore) => {
         if(!loading && !fetchingMore && !finished){
             setFetchingMore(true)
-            console.log('aaaaa')
             fetchMore({query:QUESTIONS_FETCH_MORE,updateQuery,variables:{id:user_id,offset}})
-            console.log('aaaaa')
         }
     }
     const ProfileHeader=({user})=>(
@@ -202,10 +202,8 @@ function Profile(props) {
     )
 
 
-    console.log(err)
     if(err || error) return <Err refreshing={refreshing} setRefreshing={setRefreshing}/>
     if(loading || refreshing) return <><StackHeader showHeader={props.route.params.showHeader} title='Profile'/><Loading/></>
-    console.log(data)
     // var user=data.user
     // user.profile_pic = 'https://i.stack.imgur.com/l60Hf.png'
     // if(user.fb_id){
