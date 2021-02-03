@@ -181,7 +181,7 @@ function Profile(props) {
                     <Text style={styles.followers_text}>Followers</Text>
                 </View>
                 <View style={styles.followers}>
-                    <Text style={styles.followers_count}>{user.points}</Text>
+                    <Text style={styles.followers_count}>{points}</Text>
                     <Text style={styles.followers_text}>Points</Text>
                 </View>
                 <View style={styles.followers}>
