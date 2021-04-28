@@ -26,7 +26,14 @@ const UPDATE_USER_DATA = gql`
       err_msg
     }
 }`;
-
+function InputView(props) {
+    styles=props.styles
+    return (
+        <View style={styles.input_container}>
+            <Text style={styles.txt}>{props.title}</Text>
+            <Input key={props.key2} style={styles.input} placeholder={props.title} value={props.value} onChangeText={props.onChangeText} />
+        </View>)
+}
 
 function Settings({navigation}) {
     const {user,setUser} = useContext(userContext)
@@ -52,13 +59,7 @@ function Settings({navigation}) {
             fontWeight: '700'
         }
     })
-    function InputView(props) {
-        return (
-            <View style={styles.input_container}>
-                <Text style={styles.txt}>{props.title}</Text>
-                <Input style={styles.input} placeholder={props.title} placeholderTextColor={dark?'#a1a1a1':'gray'} value={props.value} onChangeText={props.onChangeText} />
-            </View>)
-    }
+  
     const submitForm=()=>{
         setSaving(true)
         editUser({variables:formData}).then(({data})=>{
@@ -93,10 +94,10 @@ function Settings({navigation}) {
         <View style={{flex:1}}>
             <StackHeader navigation={navigation} title='Settings'/>
             <View style={styles.main} >
-                <InputView title='First Name' onChangeText={(txt)=>setFormData(s=>({...s,first_name:txt}))} value={formData.first_name}/>
-                <InputView title='Last Name' onChangeText={(txt)=>setFormData(s=>({...s,last_name:txt}))} value={formData.last_name}/>
-                <InputView title='Email' onChangeText={(txt)=>setFormData(s=>({...s,email:txt}))} value={formData.email}/>
-                <InputView title='Bio' onChangeText={(txt)=>setFormData(s=>({...s,bio:txt}))}  value={formData.bio}/>
+                <InputView title='First Name' onChangeText={(txt)=>setFormData(s=>({...s,first_name:txt}))} value={formData.first_name} styles={styles}/>
+                <InputView title='Last Name' onChangeText={(txt)=>setFormData(s=>({...s,last_name:txt}))} value={formData.last_name} styles={styles}/>
+                <InputView title='Email' onChangeText={(txt)=>setFormData(s=>({...s,email:txt}))} value={formData.email} styles={styles}/>
+                <InputView title='Bio' onChangeText={(txt)=>setFormData(s=>({...s,bio:txt}))}  value={formData.bio} styles={styles}/>
                 <Button disabled={saving}  onPress={()=>submitForm()} style={{backgroundColor:saving?'#00C85333':'#00C853'}}>Save</Button>
             </View>
         </View>

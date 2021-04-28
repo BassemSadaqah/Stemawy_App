@@ -1,6 +1,8 @@
 import { Button,FlatList, TouchableOpacity } from 'react-native';
 import React from 'react'
 import { StyleSheet,Text, View,TextInput } from 'react-native';
+import { useTheme } from '@react-navigation/native'
+
 // import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 
 const styles=StyleSheet.create({
@@ -16,9 +18,11 @@ const styles=StyleSheet.create({
     }
 })
 export default (props)=>{
+    const { colors, dark } = useTheme()
     return(
         <TextInput
             onChangeText={props.onChange}
+            placeholderTextColor={dark ? '#a1a1a1' : 'gray'} 
             {...props}
             style={{...styles.txt,...props.style}}
         />       
