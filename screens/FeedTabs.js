@@ -19,7 +19,8 @@ const Tab = createMaterialTopTabNavigator();
 export default function FeedTabs({navigation}) {
   const {user}=useContext(userContext)
   const [points,setPoints]=useState(0)
-  const providerValue = { points, setPoints }
+  const providerValue ={ points, setPoints }
+  // const providerValue =React.useMemo(() => ( { points, setPoints }),[points])
   return (
     <PointsContext.Provider value={providerValue}>
     <Tab.Navigator

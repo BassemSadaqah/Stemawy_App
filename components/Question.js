@@ -143,6 +143,9 @@ export default React.memo(function Question(props) {
 
     })
     const submitAnswer=()=>{
+        if(clicked+1==props.answer){
+            props.setPoints(p => p + 5)
+        }
         // console.log(clicked)
         // // console.log(props.answer)
         // firestore().collection('Answers').doc((user.uid+'_'+props.question_id)).set({
@@ -161,29 +164,28 @@ export default React.memo(function Question(props) {
         // }
         setAnswered(true)
     }
-    const Answer_button = (props)=>{
+    const Answer_button = (Props)=>{
         const btn_style=()=>{
             if(answered){
-                if (props.index ==clicked && clicked+1==props.answer) {
-                    props.setPoints(p => p + 5)
+                if (Props.index ==clicked && clicked+1==Props.answer) {
                     return {...s.btn,backgroundColor: '#22d652'}
                 }
-                else if(props.index ==clicked && clicked+1!=props.answer) {
+                else if(Props.index ==clicked && clicked+1!=Props.answer) {
                     return {...s.btn,backgroundColor: '#f72f2f'}
                 }
                  else {
                     return {...s.btn}
                 }
             }
-            else if(clicked==props.index){
+            else if(clicked==Props.index){
                 return {...s.btn,...s.clicked}
             }else{
                 return s.btn
             }
         }
         return (
-            <TouchableOpacity disabled={answered}  onPress={()=>{setClicked(props.index)}} style={btn_style()}>
-                <Text style={s.btn_txt}>{props.ans}</Text>
+            <TouchableOpacity disabled={answered}  onPress={()=>{setClicked(Props.index)}} style={btn_style()}>
+                <Text style={s.btn_txt}>{Props.ans}</Text>
             </TouchableOpacity>
         )
     }

@@ -57,6 +57,7 @@ const fbSignin=async (setUser,setLoading)=>{
                 setLoading(false)
             })
         }else{
+            setLoading(false)
             ToastAndroid.show(data.err_msg,ToastAndroid.SHORT)
         }
     }).catch(err=>{
